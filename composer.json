@@ -1,0 +1,13 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Evento\\": ""
+        }
+    },
+    "require": {
+        "respect/validation": "^1.1",
+        "slim/slim": "^3.8",
+        "twig/twig": "^2.3",
+        "slim/twig-view": "^2.2"
+    }
+}

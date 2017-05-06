@@ -14,48 +14,60 @@ class Validator
      */
     private static $validators = [];
 
+    const ERRORS = [
+        'signIn' => [
+            'email' => 'Invalid e-mail or password.',
+            'password' => 'Invalid e-mail or password.'
+        ],
+        'signUp' => [
+            'username' => 'Your username must be between 5 and 255 characters.',
+            'email' => 'You must use a valid e-mail address.',
+            'password' => 'Your password must be between 5 and 255 characters.',
+            'password_confirmation' => 'You must enter the same password.'
+        ]
+    ];
+
     /**
-     * Get a validator instance for checking credential 
-     * contraints when a individual attempts to sign in.
+     * Attempt to validate credentials for signing in.
      */
-    public static function signIn()
+    public static function signIn(array $data)
     {
         if (!isset(static::$validators['signIn'])) {
             static::$validators['signIn'] = Respect::arrayType()
                 ->key('email',
-                    Respect::length(0, 255)
-                        ->email()
+                    Respect::email()
                 )
                 ->key('password',
                     Respect::length(5, 255)
                 );
         }
 
-        return static::$validators['signIn'];
+        static::$validators['signIn']->assert($data);
     }
 
     /**
-     * Get a validator instance for checking credential 
-     * contraints when a individual attempts to sign up.
+     * Validating passsed information for creating a new user.
      */
-    public static function signUp()
+    public static function signUp(array $data)
     {
         if (!isset(static::$validators['signUp'])) {
-            // Cloning the validator instance create from signIn()
-            $validator = clone static::signIn()
+            static::$validators['signUp'] = Respect::arrayType()
                 ->key('username',
                     Respect::noWhitespace()
                         ->length(5, 255)
-                        ->alnum('-_')
                 )
-                ->keyValue('password_confirmation',
-                    'equals',
-                    'password'
+                ->key('email',
+                    Respect::email()
+                )
+                ->key('password',
+                    Respect::length(5, 255)
+                )
+                ->key('password_confirmation',
+                    //Respect::keyValue('password_confirmation', 'equals', 'password')
+                    Respect::equals($data['password'] ?? null)
                 );
-
-            static::$validators['signUp'] = $validator;
         }
 
-        return static::$validators['signUp'];
+        static::$validators['signUp']->assert($data);
     }
 }

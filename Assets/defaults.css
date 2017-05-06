@@ -1,6 +1,6 @@
 form {
     display: block;
-    max-width: 250px;
+    max-width: 400px;
 }
 
 form label {
@@ -15,14 +15,26 @@ form input {
     margin-bottom: 1rem;
 }
 
+form input {
+    display: block;
+    width: 100%;
+    padding: .25rem .5rem;
+    margin-bottom: 1rem;
+}
+
 form button {
     display: inline-block;
     padding: .25rem .5rem;
 }
 
+nav {
+    display: flex;
+}
+
 nav a {
-    display: inline-block;
+    display: block;
     padding: .5rem 1rem;
+    margin-right: .5rem;
     border: 1px solid black;
 }
 
@@ -42,6 +54,26 @@ main {
     margin-top: 2rem;
 }
 
-h1, h2, h3 {
+h1, h2, h3, legend {
+    line-height: 1;
     font-weight: normal;
+    margin-bottom: .5rem;
+}
+
+.card {
+    border: 1px solid black;
+    padding: 1.5rem;
+}
+
+pre {
+    display: block;
+    width: 100%;
+    white-space: normal;
+    word-wrap: normal;
+}
+
+.error-block {
+    color: red;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
 }

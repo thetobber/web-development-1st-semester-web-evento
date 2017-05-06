@@ -2,7 +2,7 @@
 namespace Evento\Controllers;
 
 use Evento\Validation\Validator;
-use Respect\Validation\Exceptions\ValidationException;
+use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
  * Defines a layer of security with the purpose of authentication
@@ -19,18 +19,24 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Sign in an user
+     * Sign in an user by validating the request parameters.
      */
     public function postSignIn($request, $response)
     {
-        $signIn = Validator::signIn();
         $params = $request->getParams();
 
-        if ($signIn->validate($params)) {
-            return $this->redirect($response, 'Main');
+        try {
+            Validator::signIn($params);
+        } catch (NestedValidationException $e) {
+            $errors = $e->findMessages(Validator::ERRORS['signIn']);
+
+            return $this->view($response, 'Auth/SignIn.html', [
+                'params' => $params,
+                'errors' => $errors
+            ]);
         }
 
-        return $this->view($response, 'Auth/SignIn.html', $params);
+        return $this->redirect($response, 'Main');
     }
 
     /**
@@ -38,20 +44,6 @@ class AuthController extends AbstractController
      */
     public function getSignUp($request, $response)
     {
-        /*$signIn = Validator::signIn();
-        $signUp = Validator::signUp();
-
-        try {
-            $signUpCheck = $signUp->check([
-                'username' => 'tobias',
-                'email' => 'mail@tobymw.dk',
-                'password' => '12345678',
-                'password_confirmation' => '12345678'
-            ]);
-        } catch (ValidationException $e) {
-            var_dump($e->getMessage());
-        }*/
-
         return $this->view($response, 'Auth/SignUp.html');
     }
 
@@ -60,13 +52,19 @@ class AuthController extends AbstractController
      */
     public function postSignUp($request, $response)
     {
-        $signUp = Validator::signUp();
         $params = $request->getParams();
 
-        if ($signUp->validate($params)) {
-            return $this->redirect($response, 'Main');
+        try {
+            Validator::signUp($params);
+        } catch (NestedValidationException $e) {
+            $errors = $e->findMessages(Validator::ERRORS['signUp']);
+
+            return $this->view($response, 'Auth/SignUp.html', [
+                'params' => $params,
+                'errors' => $errors
+            ]);
         }
 
-        return $this->view($response, 'Auth/SignUp.html', $params);
+        return $this->redirect($response, 'Main');
     }
 }

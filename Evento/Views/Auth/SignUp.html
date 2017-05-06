@@ -11,17 +11,29 @@
             <legend>Sign up</legend>
 
             <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username" value="{{ username }}">
+            <input id="username" name="username" type="text" placeholder="Username" value="{{ params.username }}">
+            {% if errors.username %}
+                <div class="error-block">{{ errors.username }}</div>
+            {% endif %}
 
             <label for="email">E-mail</label>
-            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ email }}">
+            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email }}">
+            {% if errors.email %}
+                <div class="error-block">{{ errors.email }}</div>
+            {% endif %}
             
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Password">
-            
+            <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
+            {% if errors.password %}
+                <div class="error-block">{{ errors.password }}</div>
+            {% endif %}
+
             <label for="password_confirmation">Confirm password</label>
-            <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password">
-            
+            <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password" value="{{ params.password_confirmation }}">
+            {% if errors.password_confirmation %}
+                <div class="error-block">{{ errors.password_confirmation }}</div>
+            {% endif %}
+
             <button type="submit">Sign up</button>
         </fieldset>
     </form>

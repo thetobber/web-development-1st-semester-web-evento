@@ -1,7 +1,7 @@
 <?php
 namespace Evento\Controllers;
 
-class AuthController extends Controller
+class AuthController extends AbstractController
 {
     /**
      * Sign in user view

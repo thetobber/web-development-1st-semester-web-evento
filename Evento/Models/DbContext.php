@@ -41,6 +41,7 @@ class DbContext
             } catch (PDOException $e) {
                 header('HTTP/1.1 500 Internal Server Error', true);
                 die('Could not connect to database.');
+                //return null;
             }
         }
         

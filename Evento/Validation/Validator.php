@@ -63,8 +63,9 @@ class Validator
                     Respect::length(5, 255)
                 )
                 ->key('password_confirmation',
-                    //Respect::keyValue('password_confirmation', 'equals', 'password')
-                    Respect::equals($data['password'] ?? null)
+                    Respect::notEmpty()
+                        ->equals($data['password'] ?? null)
+                        ->length(5, 255)
                 );
         }
 

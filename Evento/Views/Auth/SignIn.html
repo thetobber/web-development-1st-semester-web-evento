@@ -15,7 +15,11 @@
             
             <label for="password">Password</label>
             <input id="password" name="password" type="password" placeholder="Password">
-            
+
+            {% if errors.email or errors.password %}
+                <div class="error-block">{{ errors.username ? errors.username : errors.password }}</div>
+            {% endif %}
+
             <button type="submit">Sign in</button>
         </fieldset>
     </form>

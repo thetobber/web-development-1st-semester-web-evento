@@ -1,9 +1,16 @@
 {% extends 'Shared/Layout.html' %}
 
+{% block head %}
+    {{ parent() }}
+    <title>Evento - Home</title>
+{% endblock %}
+
 {% block body %}
 <h1>Index {{ var }}</h1>
 
 {{ std.test1 | raw }}
 {{ std.test2 | raw }}
+
+{{ test }}
 
 {% endblock %}

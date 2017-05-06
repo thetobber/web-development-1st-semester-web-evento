@@ -1,5 +1,28 @@
 {% extends 'Shared/Layout.html' %}
 
+{% block head %}
+    {{ parent() }}
+    <title>Evento - Sign up</title>
+{% endblock %}
+
 {% block body %}
-<h1>Sign Out</h1>
+    <form action="{{ path_for('Auth.SignUp') }}" method="POST">
+        <fieldset>
+            <legend>Sign up</legend>
+
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username" value="{{ username }}">
+
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ email }}">
+            
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Password">
+            
+            <label for="password_confirmation">Confirm password</label>
+            <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password">
+            
+            <button type="submit">Sign up</button>
+        </fieldset>
+    </form>
 {% endblock %}

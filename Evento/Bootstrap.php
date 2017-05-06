@@ -6,7 +6,8 @@ require(__DIR__.'/../Vendor/autoload.php');
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
-use Evento\Models\DbContext;
+use Evento\Models\DatabaseContext;
+use Evento\Validation\Validator;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
 use Evento\Middleware\RequestForgeryMiddleware;
@@ -23,6 +24,11 @@ $app->add(new RequestForgeryMiddleware());
 
 $container = $app->getContainer();
 
+$container['test'] = function () {
+    return 'test container';
+};
+
+
 $container['view'] = function ($container) {
     $view = new Twig(__DIR__.'/Views', [
         'debug ' => true,
@@ -30,11 +36,15 @@ $container['view'] = function ($container) {
     ]);
 
     $view->addExtension(new TwigExtension(
-        $container['router'],
+        $container->router,
         $container->request->getUri()
     ));
 
     return $view;
+};
+
+$container['database'] = function () {
+    return DatabaseContext::getContext();
 };
 
 $container['AuthController'] = function ($container) {

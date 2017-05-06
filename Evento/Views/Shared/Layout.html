@@ -2,18 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Evento</title>
+    {% block head %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ base_url() }}/Assets/bootstrap-reboot.css" media="all">
+        <link rel="stylesheet" href="{{ base_url() }}/Assets/bootstrap-grid.css" media="all">
+        <link rel="stylesheet" href="{{ base_url() }}/Assets/defaults.css" media="all">
+    {% endblock %}
 </head>
 
 <body>
-    <nav>
-        <a href="{{ path_for('Main') }}">Evento</a>
-        <a href="{{ path_for('Auth.SignUp') }}">Sign Up</a>
-        <a href="{{ path_for('Auth.SignIn') }}">Sign Up</a>
+    <nav class="container">
+        <a href="{{ path_for('Main') }}">Home</a>
+        <a href="{{ path_for('Auth.SignIn') }}">Sign in</a>
+        <a href="{{ path_for('Auth.SignUp') }}">Sign up</a>
     </nav>
 
-    {% block body %}{% endblock %}
+    <main class="container">
+        {% block body %}{% endblock %}
+    </main>
 </body>
 
 </html>

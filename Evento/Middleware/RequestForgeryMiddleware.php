@@ -12,3 +12,6 @@ class RequestForgeryMiddleware
         return $response;
     }
 }
+
+
+//X-CSRF-Token

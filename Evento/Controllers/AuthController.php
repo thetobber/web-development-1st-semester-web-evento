@@ -1,8 +1,11 @@
 <?php
 namespace Evento\Controllers;
 
+use Evento\Validation\Validator;
+use Respect\Validation\Exceptions\ValidationException;
+
 /**
- * Defines a layer of security with the purpose of authentication 
+ * Defines a layer of security with the purpose of authentication
  * users, checking their roles and deciding what they can access.
  */
 class AuthController extends AbstractController
@@ -20,8 +23,14 @@ class AuthController extends AbstractController
      */
     public function postSignIn($request, $response)
     {
+        $signIn = Validator::signIn();
+        $params = $request->getParams();
 
-        return $this->redirect($response, 'Auth.SignIn');
+        if ($signIn->validate($params)) {
+            return $this->redirect($response, 'Main');
+        }
+
+        return $this->view($response, 'Auth/SignIn.html', $params);
     }
 
     /**
@@ -29,7 +38,21 @@ class AuthController extends AbstractController
      */
     public function getSignUp($request, $response)
     {
-        return $this->view($response, 'Auth/SignIn.html');
+        /*$signIn = Validator::signIn();
+        $signUp = Validator::signUp();
+
+        try {
+            $signUpCheck = $signUp->check([
+                'username' => 'tobias',
+                'email' => 'mail@tobymw.dk',
+                'password' => '12345678',
+                'password_confirmation' => '12345678'
+            ]);
+        } catch (ValidationException $e) {
+            var_dump($e->getMessage());
+        }*/
+
+        return $this->view($response, 'Auth/SignUp.html');
     }
 
     /**
@@ -37,7 +60,13 @@ class AuthController extends AbstractController
      */
     public function postSignUp($request, $response)
     {
+        $signUp = Validator::signUp();
+        $params = $request->getParams();
 
-        return $this->redirect($response, 'Auth.SignIn');
+        if ($signUp->validate($params)) {
+            return $this->redirect($response, 'Main');
+        }
+
+        return $this->view($response, 'Auth/SignUp.html', $params);
     }
 }

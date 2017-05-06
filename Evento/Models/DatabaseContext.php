@@ -5,25 +5,28 @@ use PDO;
 use PDOException;
 
 /**
- * Represents a singlton which handles the connection between the application and
- * a database server.
+ * Represents a singlton which handles the connection between 
+ * the application and a database server.
  */
-class DbContext
+class DatabaseContext
 {
     /**
-     *
+     * Static instance for the PDO class.
      */
     protected static $pdo;
 
     /**
-     * Constructor with an access modifier of private to prevent instantiation.
+     * Constructor with an access modifier of private to 
+     * prevent instantiation.
      */
     private function __construct()
     {
     }
 
     /**
-     *
+     * Creates a new instance of the PDO class or returns an 
+     * existing instance if this method has already been 
+     * invoked once before.
      */
     public static function getContext()
     {
@@ -39,9 +42,13 @@ class DbContext
                     ]
                 );
             } catch (PDOException $e) {
+                /*
+                Implement something which does not make the 
+                application die here.
+                */
+
                 header('HTTP/1.1 500 Internal Server Error', true);
                 die('Could not connect to database.');
-                //return null;
             }
         }
         

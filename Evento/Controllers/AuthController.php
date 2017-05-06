@@ -1,6 +1,10 @@
 <?php
 namespace Evento\Controllers;
 
+/**
+ * Defines a layer of security with the purpose of authentication 
+ * users, checking their roles and deciding what they can access.
+ */
 class AuthController extends AbstractController
 {
     /**

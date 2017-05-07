@@ -6,11 +6,9 @@ require(__DIR__.'/../Vendor/autoload.php');
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
-use Evento\Models\DatabaseContext;
-use Evento\Validation\Validator;
+use Evento\Middleware\AuthMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
-use Evento\Middleware\RequestForgeryMiddleware;
 
 $app = new App([
     'settings' => [
@@ -19,15 +17,7 @@ $app = new App([
     ]
 ]);
 
-$app->add(new RequestForgeryMiddleware());
-
-
 $container = $app->getContainer();
-
-$container['test'] = function () {
-    return 'test container';
-};
-
 
 $container['view'] = function ($container) {
     $view = new Twig(__DIR__.'/Views', [
@@ -43,9 +33,7 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$container['database'] = function () {
-    return DatabaseContext::getContext();
-};
+$app->add(new AuthMiddleware($container));
 
 $container['AuthController'] = function ($container) {
     return new AuthController($container);
@@ -56,15 +44,26 @@ $container['MainController'] = function ($container) {
 };
 
 // Auth routes
-$app->get('/signin', 'AuthController:getSignIn')->setName('Auth.SignIn');
+$app->get('/signin', 'AuthController:getSignIn')
+    ->setName('Auth.SignIn');
+
 $app->post('/signin', 'AuthController:postSignIn');
 
-$app->get('/signup', 'AuthController:getSignUp')->setName('Auth.SignUp');
+$app->get('/signup', 'AuthController:getSignUp')
+    ->setName('Auth.SignUp');
+
 $app->post('/signup', 'AuthController:postSignUp');
 
-$app->get('/signout', 'AuthController:signOut')->setName('Auth.SingOut');
+$app->get('/signout', 'AuthController:getSignOut')
+    ->setName('Auth.SignOut');
+
+$app->get('/profile', 'AuthController:getProfile')
+    ->setName('Auth.Profile');
+
+$app->put('/profile', 'AuthController:putProfile');
 
 // Main routes
-$app->get('/', 'MainController:getIndex')->setName('Main');
+$app->get('/', 'MainController:getIndex')
+    ->setName('Main');
 
 $app->run();

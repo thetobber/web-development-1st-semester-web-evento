@@ -13,9 +13,17 @@
 <body>
     <nav class="container">
         <a href="{{ path_for('Main') }}">Home</a>
-        <a href="{{ path_for('Auth.SignIn') }}">Sign in</a>
-        <a href="{{ path_for('Auth.SignUp') }}">Sign up</a>
+
+        {% if user %}
+            <a href="{{ path_for('Auth.SignOut') }}">Sign Out</a>
+            <div class="align-right">Signed in as {{ user.name }}</div>
+        {% else %}
+            <a href="{{ path_for('Auth.SignIn') }}">Sign in</a>
+            <a href="{{ path_for('Auth.SignUp') }}">Sign up</a>
+        {% endif %}
     </nav>
+
+
 
     <main class="container">
         <div class="card">

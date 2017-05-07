@@ -20,7 +20,7 @@ abstract class AbstractController
         );
     }
 
-    protected function view($response, $template, $data = [])
+    protected function view($response, $template, array $data = [])
     {
         return $this->view
             ->render($response, $template, $data);

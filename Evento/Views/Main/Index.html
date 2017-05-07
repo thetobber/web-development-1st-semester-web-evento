@@ -6,11 +6,9 @@
 {% endblock %}
 
 {% block body %}
-<h1>Index {{ var }}</h1>
+    <h2>Main</h2>
 
-{{ std.test1 | raw }}
-{{ std.test2 | raw }}
-
-{{ test }}
-
+    {% if user %}
+        {{ user | json_encode }}
+    {% endif %}
 {% endblock %}

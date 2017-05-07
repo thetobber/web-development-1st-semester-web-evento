@@ -1,7 +1,8 @@
 <?php
 namespace Evento\Controllers;
 
-use Evento\Validation\Validator;
+use Evento\Models\Validator;
+use Evento\Models\UserRepository;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
@@ -10,6 +11,14 @@ use Respect\Validation\Exceptions\NestedValidationException;
  */
 class AuthController extends AbstractController
 {
+    protected $repository;
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->repository = new UserRepository();
+    }
+
     /**
      * Sign in user view
      */
@@ -27,16 +36,30 @@ class AuthController extends AbstractController
 
         try {
             Validator::signIn($params);
-        } catch (NestedValidationException $e) {
-            $errors = $e->findMessages(Validator::ERRORS['signIn']);
+            
+            $user = $this->repository
+                ->get($params['email']);
+            
+            $password = base64_encode(
+                hash('sha256', $params['password'], true)
+            );
 
-            return $this->view($response, 'Auth/SignIn.html', [
-                'params' => $params,
-                'errors' => $errors
-            ]);
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user'] = [
+                    'id' => $user['id'],
+                    'name' => $user['username'],
+                    'email' => $user['email']
+                ];
+
+                return $this->redirect($response, 'Main');
+            }
+        } catch (NestedValidationException $e) {
         }
 
-        return $this->redirect($response, 'Main');
+        return $this->view($response, 'Auth/SignIn.html', [
+            'params' => $params,
+            'error' => Validator::ERRORS['signIn']
+        ]);
     }
 
     /**
@@ -56,6 +79,7 @@ class AuthController extends AbstractController
 
         try {
             Validator::signUp($params);
+            $this->repository->create($params);
         } catch (NestedValidationException $e) {
             $errors = $e->findMessages(Validator::ERRORS['signUp']);
 
@@ -66,5 +90,32 @@ class AuthController extends AbstractController
         }
 
         return $this->redirect($response, 'Main');
+    }
+
+    /**
+     * Sign out an user
+     */
+    public function getSignOut($request, $response)
+    {
+        session_unset();
+        session_destroy();
+
+        return $this->redirect($response, 'Main');
+    }
+
+    /**
+     * View user profile
+     */
+    public function getProfile($request, $response)
+    {
+        return $this->view($response, 'Auth/Profile.html');
+    }
+
+    /**
+     * Update user profile
+     */
+    public function putProfile($request, $response)
+    {
+        return $this->view($response, 'Auth/Profile.html');
     }
 }

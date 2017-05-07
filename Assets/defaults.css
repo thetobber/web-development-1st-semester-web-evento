@@ -38,6 +38,10 @@ nav a {
     border: 1px solid black;
 }
 
+nav .align-right {
+    margin-left: auto;
+}
+
 nav a,
 nav a:hover,
 nav a:focus,
@@ -65,11 +69,8 @@ h1, h2, h3, legend {
     padding: 1.5rem;
 }
 
-pre {
-    display: block;
-    width: 100%;
-    white-space: normal;
-    word-wrap: normal;
+.text-error {
+    color: red;
 }
 
 .error-block {

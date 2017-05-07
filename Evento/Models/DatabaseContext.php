@@ -35,7 +35,7 @@ class DatabaseContext
                 static::$pdo = new PDO(
                     'mysql:host=localhost;dbname=evento;charset=utf8',
                     'evento',
-                    '123',
+                    'nhQrQQzf7C6mTybsm47Hy4ae',
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_EMULATE_PREPARES => false

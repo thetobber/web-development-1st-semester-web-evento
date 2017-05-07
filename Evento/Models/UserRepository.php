@@ -4,8 +4,30 @@ namespace Evento\Models;
 use PDO;
 use PDOException;
 
-class UserRepository extends AbstractRepository
+class UserRepository
 {
+    private static $instance;
+    private $pdo;
+
+    private function __construct()
+    {
+        $this->pdo = DatabaseContext::getContext();
+    }
+
+    /**
+     * Creates a new instance of this class or returns an 
+     * existing instance if this method has already been 
+     * invoked once before.
+     */
+    public static function getInstance()
+    {
+        if (static::$instance === null) {
+            static::$instance = new static();
+        }
+        
+        return static::$instance;
+    }
+
     /**
      *
      */

@@ -16,7 +16,7 @@ class AuthController extends AbstractController
     public function __construct($container)
     {
         parent::__construct($container);
-        $this->repository = new UserRepository();
+        $this->repository = UserRepository::getInstance();
     }
 
     /**
@@ -113,8 +113,9 @@ class AuthController extends AbstractController
      */
     public function getSignOut($request, $response)
     {
-        session_unset();
-        session_destroy();
+        unset($_SESSION['user']);
+        //session_unset();
+        //session_destroy();
 
         return $this->redirect($response, 'Main');
     }

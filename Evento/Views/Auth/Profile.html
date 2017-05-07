@@ -1,5 +1,12 @@
 {% extends 'Shared/Layout.html' %}
 
+{% block head %}
+    {{ parent() }}
+    <title>Evento - {{ user.name | capitalize }}</title>
+{% endblock %}
+
 {% block body %}
-    <h1>Profile</h1>
+    {% for item in user %}
+        <div>{{ item }}</div>
+    {% endfor %}
 {% endblock %}

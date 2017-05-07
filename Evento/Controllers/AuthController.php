@@ -24,6 +24,10 @@ class AuthController extends AbstractController
      */
     public function getSignIn($request, $response)
     {
+        if (isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         return $this->view($response, 'Auth/SignIn.html');
     }
 
@@ -32,6 +36,10 @@ class AuthController extends AbstractController
      */
     public function postSignIn($request, $response)
     {
+        if (isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         $params = $request->getParams();
 
         try {
@@ -67,6 +75,10 @@ class AuthController extends AbstractController
      */
     public function getSignUp($request, $response)
     {
+        if (isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         return $this->view($response, 'Auth/SignUp.html');
     }
 
@@ -75,6 +87,10 @@ class AuthController extends AbstractController
      */
     public function postSignUp($request, $response)
     {
+        if (isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Main');
+        }
+
         $params = $request->getParams();
 
         try {
@@ -108,6 +124,10 @@ class AuthController extends AbstractController
      */
     public function getProfile($request, $response)
     {
+        if (!isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Main');
+        }
+
         return $this->view($response, 'Auth/Profile.html');
     }
 
@@ -116,6 +136,10 @@ class AuthController extends AbstractController
      */
     public function putProfile($request, $response)
     {
+        if (!isset($_SESSION['user'])) {
+            return $this->redirect($response, 'Main');
+        }
+
         return $this->view($response, 'Auth/Profile.html');
     }
 }

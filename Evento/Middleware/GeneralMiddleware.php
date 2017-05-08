@@ -15,6 +15,12 @@ class GeneralMiddleware extends AbstractMiddleware
                 ->addGlobal('user', $_SESSION['user']);
         }
 
+        $response = $response
+            ->withHeader('Content-Security-Policy', "script-src 'self'")
+            ->withHeader('X-Content-Type-Options', 'nosniff')
+            ->withHeader('X-Frame-Options', 'SAMEORIGIN')
+            ->withHeader('X-XSS-Protection', '1; mode=block');
+
         return $next($request, $response);
     }
 }

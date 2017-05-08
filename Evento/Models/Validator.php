@@ -29,6 +29,13 @@ class Validator
             'email' => 'You must use a valid e-mail address.',
             'password' => 'Your password must be between 5 and 255 characters.',
             'password_confirmation' => 'You must enter the same password.'
+        ],
+        'updateUser' => [
+            'username' => 'Your username must be between 1 and 255 characters.',
+            'email' => 'You must use a valid e-mail address.',
+            'password_old' => 'Your password must be between 5 and 255 characters.',
+            'password' => 'Your password must be between 5 and 255 characters.',
+            'password_confirmation' => 'You must enter the same password.'
         ]
     ];
 
@@ -83,5 +90,39 @@ class Validator
         }
 
         static::$validators['signUp']->assert($data);
+    }
+
+    /**
+     * Validating passsed information for uådating an existing user.
+     *
+     * @param array $data
+     * @throws NestedValidationException if assertion fails.
+     * @link https://github.com/Respect/Validation/blob/master/docs/README.md#exception-types
+     */
+    public static function updateUser(array $data)
+    {
+        if (!isset(static::$validators['signUp'])) {
+            static::$validators['signUp'] = Respect::arrayType()
+                ->key('id',
+                    Respect::intVal()
+                )
+                ->key('username',
+                    Respect::noWhitespace()
+                        ->length(1, 255)
+                )
+                ->key('password_old',
+                    Respect::length(5, 255)
+                )
+                ->key('password',
+                    Respect::length(5, 255)
+                )
+                ->key('password_confirmation',
+                    Respect::notEmpty()
+                        ->equals($data['password'] ?? null)
+                        ->length(5, 255)
+                );
+        }
+
+        static::$validators['updateUser']->assert($data);
     }
 }

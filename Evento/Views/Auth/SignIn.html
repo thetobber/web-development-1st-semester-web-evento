@@ -10,15 +10,16 @@
         <fieldset>
             <legend>Sign in</legend>
 
-            {% if errors %}
-                <div class="text-error">Invalid e-mail or password.</div>
-            {% endif %}
-
             <label for="email">E-mail</label>
             <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email }}">
             
             <label for="password">Password</label>
             <input id="password" name="password" type="password" placeholder="Password">
+
+            <label class="checkbox">
+                <input name="remember_me" type="checkbox" value="Yes">
+                <span>Remember me?</span>
+            </label>
 
             {% if error %}
                 <div class="error-block">{{ error }}</div>

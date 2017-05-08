@@ -31,29 +31,24 @@ class UserRepository
     /**
      *
      */
-    public function create(array $data)
+    public function insertUser(array $data)
     {
-        try {
-            $statement = $this->pdo
-                ->prepare('INSERT INTO `users` (`username`, `email`, `password`) VALUES (?, ?, ?)');
+        $statement = $this->pdo
+            ->prepare('CALL insertUser(?, ?, ?)');
 
-            $password = password_hash(
-                base64_encode(
-                    hash('sha256', $data['password'], true)
-                ),
-                PASSWORD_BCRYPT
-            );
+        $password = password_hash(
+            base64_encode(
+                hash('sha256', $data['password'], true)
+            ),
+            PASSWORD_BCRYPT
+        );
 
-            $statement->bindParam(1, $data['username'], PDO::PARAM_STR, 255);
-            $statement->bindParam(2, $data['email'], PDO::PARAM_STR, 255);
-            $statement->bindParam(3, $password);
+        $statement->bindParam(1, $data['username'], PDO::PARAM_STR, 255);
+        $statement->bindParam(2, $data['email'], PDO::PARAM_STR, 255);
+        $statement->bindParam(3, $password);
 
-            $statement->execute();
-        } catch (PDOException $e) {
-            return false;
-        }
-
-        return true;
+        $statement->execute();
+        //return $this->pdo->lastInsertId();
     }
 
     public function get($email)
@@ -65,7 +60,6 @@ class UserRepository
             $statement->bindParam(1, $email, PDO::PARAM_STR, 255);
             $statement->execute();
         } catch (PDOException $e) {
-            return null;
         }
 
         if (($user = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {

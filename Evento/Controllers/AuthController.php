@@ -1,7 +1,11 @@
 <?php
 namespace Evento\Controllers;
 
+use PDO;
+use PDOException;
+use DateTime;
 use Evento\Models\Validator;
+use Evento\Models\Authentication;
 use Evento\Models\UserRepository;
 use Respect\Validation\Exceptions\NestedValidationException;
 
@@ -11,20 +15,12 @@ use Respect\Validation\Exceptions\NestedValidationException;
  */
 class AuthController extends AbstractController
 {
-    protected $repository;
-
-    public function __construct($container)
-    {
-        parent::__construct($container);
-        $this->repository = UserRepository::getInstance();
-    }
-
     /**
-     * Sign in user view
+     * Return sign in view on GET request.
      */
     public function getSignIn($request, $response)
     {
-        if (isset($_SESSION['user'])) {
+        if (Authentication::isVerified()) {
             return $this->redirect($response, 'Auth.Profile');
         }
 
@@ -32,36 +28,25 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Sign in an user by validating the request parameters.
+     * Attempt to sign in user on POST request.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      */
     public function postSignIn($request, $response)
     {
-        if (isset($_SESSION['user'])) {
-            return $this->redirect($response, 'Auth.Profile');
-        }
-
         $params = $request->getParams();
 
-        try {
-            Validator::signIn($params);
-            
-            $user = $this->repository
-                ->get($params['email']);
-            
-            $password = base64_encode(
-                hash('sha256', $params['password'], true)
-            );
-
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user'] = [
-                    'id' => $user['id'],
-                    'name' => $user['username'],
-                    'email' => $user['email']
-                ];
-
-                return $this->redirect($response, 'Main');
+        if (Authentication::performSignIn($params)) {
+            //Set cookie if remember_me
+            if (isset($params['remember_me'])) {
+                //set Secure
+                /*$response = $response
+                    ->withHeader('Set-Cookie', 'test=value; HttpOnly; Path=/; SameSite=Strict');*/
             }
-        } catch (NestedValidationException $e) {
+
+            return $this->redirect($response, 'Auth.Profile');
         }
 
         return $this->view($response, 'Auth/SignIn.html', [
@@ -71,11 +56,15 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Sign up user view
+     * Return sign up view on GET request.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      */
     public function getSignUp($request, $response)
     {
-        if (isset($_SESSION['user'])) {
+        if (Authentication::isVerified()) {
             return $this->redirect($response, 'Auth.Profile');
         }
 
@@ -83,19 +72,22 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Sign up an user
+     * Attempt to sign up and create a new user on POST request.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      */
     public function postSignUp($request, $response)
     {
-        if (isset($_SESSION['user'])) {
-            return $this->redirect($response, 'Main');
+        if (Authentication::isVerified()) {
+            return $this->redirect($response, 'Auth.Profile');
         }
 
         $params = $request->getParams();
 
         try {
             Validator::signUp($params);
-            $this->repository->create($params);
         } catch (NestedValidationException $e) {
             $errors = $e->findMessages(Validator::ERRORS['signUp']);
 
@@ -105,7 +97,20 @@ class AuthController extends AbstractController
             ]);
         }
 
-        return $this->redirect($response, 'Main');
+        $repository = UserRepository::getInstance();
+
+        try {
+            $repository->insertUser($params);
+        } catch (PDOException $e) {
+            return $this->view($response, 'Auth/SignUp.html', [
+                'params' => $params,
+                'errors' => [
+                    'database' => 'Failed to create account.'
+                ]
+            ]);
+        }
+
+        return $this->redirect($response, 'Auth.SignIn');
     }
 
     /**
@@ -113,10 +118,7 @@ class AuthController extends AbstractController
      */
     public function getSignOut($request, $response)
     {
-        unset($_SESSION['user']);
-        //session_unset();
-        //session_destroy();
-
+        Authentication::performSignOut();
         return $this->redirect($response, 'Main');
     }
 
@@ -125,8 +127,8 @@ class AuthController extends AbstractController
      */
     public function getProfile($request, $response)
     {
-        if (!isset($_SESSION['user'])) {
-            return $this->redirect($response, 'Main');
+        if (!Authentication::isVerified()) {
+            return $this->redirect($response, 'Auth.SignIn');
         }
 
         return $this->view($response, 'Auth/Profile.html');
@@ -137,8 +139,8 @@ class AuthController extends AbstractController
      */
     public function putProfile($request, $response)
     {
-        if (!isset($_SESSION['user'])) {
-            return $this->redirect($response, 'Main');
+        if (!Authentication::isVerified()) {
+            return $this->redirect($response, 'Auth.SignIn');
         }
 
         return $this->view($response, 'Auth/Profile.html');

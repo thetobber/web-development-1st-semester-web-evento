@@ -6,7 +6,7 @@ require(__DIR__.'/../Vendor/autoload.php');
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
-use Evento\Middleware\AuthMiddleware;
+use Evento\Middleware\AuthenticationMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
 
@@ -33,7 +33,7 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$app->add(new AuthMiddleware($container));
+$app->add(new AuthenticationMiddleware($container));
 
 $container['AuthController'] = function ($container) {
     return new AuthController($container);

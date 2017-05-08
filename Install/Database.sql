@@ -93,7 +93,16 @@ CREATE DEFINER = 'evento'@'localhost' PROCEDURE getUserByEmail
     IN inEmail VARCHAR(255)
 )
 BEGIN
-    SELECT * FROM `users` WHERE `email` = inEmail;
+    #SELECT * FROM `users` WHERE `email` = inEmail;
+    SELECT `users`.`id`,
+           `users`.`username`,
+           `users`.`email`,
+           `users`.`password`,
+           `roles`.`role`
+    FROM `users`
+    INNER JOIN `roles`
+    ON `users`.`role_id` = `roles`.`id`
+    WHERE `users`.`email` = inEmail;
 END//
 
 #Get user

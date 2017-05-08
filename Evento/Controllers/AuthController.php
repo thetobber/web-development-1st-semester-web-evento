@@ -3,10 +3,8 @@ namespace Evento\Controllers;
 
 use PDO;
 use PDOException;
-use DateTime;
+use Evento\Models\DatabaseContext;
 use Evento\Models\Validator;
-use Evento\Models\Authentication;
-use Evento\Models\UserRepository;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
@@ -20,7 +18,7 @@ class AuthController extends AbstractController
      */
     public function getSignIn($request, $response)
     {
-        if (Authentication::isVerified()) {
+        if ($this->authHandler->isVerified()) {
             return $this->redirect($response, 'Auth.Profile');
         }
 
@@ -28,7 +26,12 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Attempt to sign in user on POST request.
+     * Attempt to sign in user on POST request and does also
+     * perform sign in of an user by taking the parameters from
+     * the incoming request and attempts to validate the data
+     * model, fetch the user from the database and compare the
+     * incoming password against the password fetched from the
+     * database.
      *
      * @param Request $request
      * @param Response $response
@@ -38,17 +41,59 @@ class AuthController extends AbstractController
     {
         $params = $request->getParams();
 
-        if (Authentication::performSignIn($params)) {
-            //Set cookie if remember_me
-            if (isset($params['remember_me'])) {
-                //set Secure
-                /*$response = $response
-                    ->withHeader('Set-Cookie', 'test=value; HttpOnly; Path=/; SameSite=Strict');*/
-            }
+        //Validate the incoming data
+        try {
+            Validator::signIn($params);
+        } catch (NestedValidationException $e) {
+            //Validation of data fails
+        }
+        
+        $pdo = DatabaseContext::getContext();
 
-            return $this->redirect($response, 'Auth.Profile');
+        //Try to get the user by email from the database
+        try {
+            $statement = $pdo
+                ->prepare('CALL getUserByEmail(?)');
+
+            $statement->bindParam(1, $params['email']);
+            $statement->execute();
+        } catch (PDOException $e) {
+            //Error performing data query
         }
 
+        $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+        //Fetch returns false on error or not found
+        if ($user !== false) {
+            $password = base64_encode(
+                hash('sha256', $params['password'], true)
+            );
+
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user'] = [
+                    'id' => $user['id'],
+                    'name' => $user['username'],
+                    'email' => $user['email'],
+                    'role' => $user['role']
+                ];
+
+                $_SESSION['user'][$user['role']] = true;
+
+                /*if (isset($params['remember_me'])) {
+                    $expires = date('D, d M Y H:i:s e', strtotime('+1 months'));
+
+                    $response = $response
+                            ->withHeader('Set-Cookie', "3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Expires=$expires");
+
+                    var_dump($response->getHeaders());
+                }*/
+
+                //Sign in succeded
+                return $this->redirect($response, 'Auth.Profile');
+            }
+        }
+
+        //Wrong password, email or database error
         return $this->view($response, 'Auth/SignIn.html', [
             'params' => $params,
             'error' => Validator::ERRORS['signIn']
@@ -64,10 +109,6 @@ class AuthController extends AbstractController
      */
     public function getSignUp($request, $response)
     {
-        if (Authentication::isVerified()) {
-            return $this->redirect($response, 'Auth.Profile');
-        }
-
         return $this->view($response, 'Auth/SignUp.html');
     }
 
@@ -80,10 +121,6 @@ class AuthController extends AbstractController
      */
     public function postSignUp($request, $response)
     {
-        if (Authentication::isVerified()) {
-            return $this->redirect($response, 'Auth.Profile');
-        }
-
         $params = $request->getParams();
 
         try {
@@ -97,16 +134,27 @@ class AuthController extends AbstractController
             ]);
         }
 
-        $repository = UserRepository::getInstance();
+        $pdo = DatabaseContext::getContext();
 
         try {
-            $repository->insertUser($params);
+            $statement = $pdo
+                ->prepare('CALL insertUser(?, ?, ?)');
+
+            $password = password_hash(
+                base64_encode(
+                    hash('sha256', $params['password'], true)
+                ),
+                PASSWORD_BCRYPT
+            );
+
+            $statement->bindParam(1, $params['username']);
+            $statement->bindParam(2, $params['email']);
+            $statement->bindParam(3, $password);
+
+            $statement->execute();
         } catch (PDOException $e) {
             return $this->view($response, 'Auth/SignUp.html', [
-                'params' => $params,
-                'errors' => [
-                    'database' => 'Failed to create account.'
-                ]
+                'params' => $params
             ]);
         }
 
@@ -114,11 +162,22 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Sign out an user
+     * Sign out by removing data about the user from the current
+     * session and destroying the "remember me" cookie if it has
+     * been set on a sign in.
      */
     public function getSignOut($request, $response)
     {
-        Authentication::performSignOut();
+        //Unset the user array of data
+        unset($_SESSION['user']);
+
+        if ($request->getCookieParam('3dtnx6xd') !== null) {
+            //Remove cookie for remember me
+            //Expiration format Mon, 01 Jan 1970 00:00:00 UTC or seconds
+            $response = $response
+                ->withHeader('Set-Cookie', '3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0');
+        }
+
         return $this->redirect($response, 'Main');
     }
 
@@ -127,10 +186,6 @@ class AuthController extends AbstractController
      */
     public function getProfile($request, $response)
     {
-        if (!Authentication::isVerified()) {
-            return $this->redirect($response, 'Auth.SignIn');
-        }
-
         return $this->view($response, 'Auth/Profile.html');
     }
 
@@ -139,10 +194,6 @@ class AuthController extends AbstractController
      */
     public function putProfile($request, $response)
     {
-        if (!Authentication::isVerified()) {
-            return $this->redirect($response, 'Auth.SignIn');
-        }
-
         return $this->view($response, 'Auth/Profile.html');
     }
 }

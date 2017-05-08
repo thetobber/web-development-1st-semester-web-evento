@@ -1,4 +1,12 @@
 <?php
+//Restrict the session cookie as much as possible
+ini_set('session.name', 'vf56p3x0');
+ini_set('session.use_strict_mode', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_secure', 0);
+ini_set('session.cookie_lifetime', 0);
+
 session_start();
 
 require(__DIR__.'/../Vendor/autoload.php');
@@ -6,7 +14,10 @@ require(__DIR__.'/../Vendor/autoload.php');
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
-use Evento\Middleware\AuthenticationMiddleware;
+use Evento\Models\AuthHandler;
+use Evento\Middleware\GeneralMiddleware;
+use Evento\Middleware\GuestMiddleware;
+use Evento\Middleware\AuthMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
 
@@ -19,51 +30,64 @@ $app = new App([
 
 $container = $app->getContainer();
 
-$container['view'] = function ($container) {
+$container['authHandler'] = function ($c) {
+    return new AuthHandler($c);
+};
+
+$container['view'] = function ($c) {
     $view = new Twig(__DIR__.'/Views', [
         'debug ' => true,
         'cache' => false //__DIR__.'/cache'
     ]);
 
     $view->addExtension(new TwigExtension(
-        $container->router,
-        $container->request->getUri()
+        $c->router,
+        $c->request->getUri()
     ));
 
     return $view;
 };
 
-$app->add(new AuthenticationMiddleware($container));
-
-$container['AuthController'] = function ($container) {
-    return new AuthController($container);
+$container['authCtrl'] = function ($c) {
+    return new AuthController($c);
 };
 
-$container['MainController'] = function ($container) {
-    return new MainController($container);
+$container['mainCtrl'] = function ($c) {
+    return new MainController($c);
 };
 
-// Auth routes
-$app->get('/signin', 'AuthController:getSignIn')
-    ->setName('Auth.SignIn');
+$app->add(new GeneralMiddleware($container));
 
-$app->post('/signin', 'AuthController:postSignIn');
+//Group only accessible when NOT signed in
+$app->group('', function () {
+    $this->get('/signin', 'authCtrl:getSignIn')
+        ->setName('Auth.SignIn');
 
-$app->get('/signup', 'AuthController:getSignUp')
-    ->setName('Auth.SignUp');
+    $this->post('/signin', 'authCtrl:postSignIn');
 
-$app->post('/signup', 'AuthController:postSignUp');
+    $this->get('/signup', 'authCtrl:getSignUp')
+        ->setName('Auth.SignUp');
 
-$app->get('/signout', 'AuthController:getSignOut')
-    ->setName('Auth.SignOut');
+    $this->post('/signup', 'authCtrl:postSignUp');
+})
+->add(new GuestMiddleware($container));
 
-$app->get('/profile', 'AuthController:getProfile')
-    ->setName('Auth.Profile');
+//Group which is ONLY accessible when signed in
+$app->group('', function () {
+    $this->get('/signout', 'authCtrl:getSignOut')
+        ->setName('Auth.SignOut');
 
-$app->put('/profile', 'AuthController:putProfile');
+    $this->get('/profile', 'authCtrl:getProfile')
+        ->setName('Auth.Profile');
+
+    $this->put('/profile', 'authCtrl:putProfile');
+})
+->add(new AuthMiddleware($container));
+
+
 
 // Main routes
-$app->get('/', 'MainController:getIndex')
+$app->get('/', 'mainCtrl:getIndex')
     ->setName('Main');
 
 $app->run();

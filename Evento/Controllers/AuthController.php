@@ -191,54 +191,22 @@ class AuthController extends AbstractController
     /**
      * Update user profile
      */
-    public function putProfile($request, $response)
+    public function postProfile($request, $response)
     {
         $params = $request->getParams();
-        $data = [
-            'params' => $params,
-            'errors' => []
-        ];
 
         try {
             Validator::updateUser($params);
         } catch (NestedValidationException $e) {
-            $data['errors'] = $e->findMessages(Validator::ERRORS['updateUser']);
+            $errors = $e->findMessages(Validator::ERRORS['updateUser']);
 
-            return $this->view($response, 'Auth/Profile.html', $data);
+            return $this->view($response, 'Auth/Profile.html', [
+                'params' => $params,
+                'errors' => $errors
+            ]);
         }
 
         $pdo = DatabaseContext::getContext();
-
-        //Try to get the user by id from the database
-        try {
-            $statement = $pdo
-                ->prepare('CALL getUserById(?)');
-
-            $statement->bindParam(1, $params['id']);
-            $statement->execute();
-        } catch (PDOException $e) {
-            //Error performing data query
-            $data['errors']['database'] = 'An unknown error occured.';
-        }
-
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
-
-        //Fetch returns false on error or not found
-        if ($user !== false) {
-            $password_old = base64_encode(
-                hash('sha256', $params['password_old'], true)
-            );
-
-            if (password_verify($password_old, $user['password_old'])) {
-                $_SESSION['user']['username'] = $params['username'];
-
-                //return $this->redirect($response, 'Auth.Profile');
-            } else {
-                $data['errors']['password_old'] = 'Invalid password.';
-            }
-        } else {
-            $data['errors']['notfound'] = 'Could not find user.';
-        }
 
         try {
             $statement = $pdo
@@ -257,17 +225,18 @@ class AuthController extends AbstractController
 
             $statement->execute();
         } catch (PDOException $e) {
-            return $this->view($response, 'Auth/SignUp.html', [
-                'params' => $params
+            var_dump($e);
+            return $this->view($response, 'Auth/Profile.html', [
+                'params' => $params,
+                'errors' => ['databatse' => 'Database error.']
             ]);
         }
 
-        return $this->redirect($response, 'Auth.SignIn');
+        $_SESSION['user']['name'] = $params['username'];
 
-
-
-
-
-        return $this->view($response, 'Auth/Profile.html');
+        return $this->view($response, 'Auth/Profile.html', [
+            'params' => ['username' => $params['username']],
+            'success' => true
+        ]);
     }
 }

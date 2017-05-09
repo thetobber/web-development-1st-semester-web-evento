@@ -80,7 +80,7 @@ $app->group('', function () {
     $this->get('/profile', 'authCtrl:getProfile')
         ->setName('Auth.Profile');
 
-    $this->put('/profile', 'authCtrl:putProfile');
+    $this->post('/profile', 'authCtrl:postProfile');
 })
 ->add(new AuthMiddleware($container));
 

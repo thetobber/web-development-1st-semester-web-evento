@@ -111,7 +111,7 @@ CREATE DEFINER = 'evento'@'localhost' PROCEDURE getUserById
     IN inId BIGINT UNSIGNED
 )
 BEGIN
-    SELECT `id`, `username`, `email` FROM `users` WHERE `id` = inId;
+    SELECT `id`, `username`, `email`, `password` FROM `users` WHERE `id` = inId;
 END//
 
 #Update user

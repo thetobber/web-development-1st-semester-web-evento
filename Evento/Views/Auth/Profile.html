@@ -6,7 +6,36 @@
 {% endblock %}
 
 {% block body %}
-    {% for item in user %}
-        <div>{{ item }}</div>
-    {% endfor %}
+
+    {% if success %}
+        Profile updated.
+    {% endif %}
+
+    <form action="{{ path_for('Auth.Profile') }}" method="POST">
+        <fieldset>
+            <legend>Update profile</legend>
+
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username" value="{{ params.username }}">
+            {% if errors.username %}
+                <div class="error-block">{{ errors.username }}</div>
+            {% endif %}
+            
+            <label for="password">New password</label>
+            <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
+            {% if errors.password %}
+                <div class="error-block">{{ errors.password }}</div>
+            {% endif %}
+
+            <label for="password_confirmation">Confirm new password</label>
+            <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password" value="{{ params.password_confirmation }}">
+            {% if errors.password_confirmation %}
+                <div class="error-block">{{ errors.password_confirmation }}</div>
+            {% endif %}
+
+            <input name="id" type="hidden" value="{{ user.id }}">
+
+            <button type="submit">Update</button>
+        </fieldset>
+    </form>
 {% endblock %}

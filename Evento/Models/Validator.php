@@ -101,17 +101,14 @@ class Validator
      */
     public static function updateUser(array $data)
     {
-        if (!isset(static::$validators['signUp'])) {
-            static::$validators['signUp'] = Respect::arrayType()
+        if (!isset(static::$validators['updateUser'])) {
+            static::$validators['updateUser'] = Respect::arrayType()
                 ->key('id',
                     Respect::intVal()
                 )
                 ->key('username',
                     Respect::noWhitespace()
                         ->length(1, 255)
-                )
-                ->key('password_old',
-                    Respect::length(5, 255)
                 )
                 ->key('password',
                     Respect::length(5, 255)

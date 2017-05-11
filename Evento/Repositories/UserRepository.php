@@ -1,5 +1,5 @@
 <?php
-namespace Evento\Models;
+namespace Evento\Repositories;
 
 use PDO;
 use PDOException;
@@ -10,23 +10,8 @@ use Evento\Models\DatabaseContext;
  * These actions are initiated with prepared statements and then 
  * executed with a stored procedure by the database system.
  */
-class UserRepository
+class UserRepository extends AbstractRepository
 {
-    /**
-     * Static instance of PDO.
-     *
-     * @var PDO
-     */
-    protected $handle;
-
-    /**
-     * Get static instance of PDO to communicate with the database.
-     */
-    public function __contruct()
-    {
-        $this->handle = DatabaseContext::getInstance();
-    }
-
     /**
      * Create a single user and insert it into the database.
      *

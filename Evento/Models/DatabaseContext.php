@@ -28,7 +28,7 @@ class DatabaseContext
      * existing instance if this method has already been 
      * invoked once before.
      */
-    public static function getContext()
+    public static function getInstance()
     {
         if (static::$pdo === null) {
             try {
@@ -41,11 +41,13 @@ class DatabaseContext
                         PDO::ATTR_EMULATE_PREPARES => false
                     ]
                 );
-            } catch (PDOException $e) {
+            } catch (PDOException $exception) {
                 /*
                 Implement something which does not make the 
                 application die here.
                 */
+
+                //return $exception;
 
                 header('HTTP/1.1 500 Internal Server Error', true);
                 die('Could not connect to database.');
@@ -53,5 +55,11 @@ class DatabaseContext
         }
         
         return static::$pdo;
+    }
+
+    //TODO: Delete this in favor of static::getInstance()
+    public static function getContext()
+    {
+        return static::getInstance();
     }
 }

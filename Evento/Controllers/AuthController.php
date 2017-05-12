@@ -4,6 +4,7 @@ namespace Evento\Controllers;
 use PDO;
 use PDOException;
 use Evento\Models\DatabaseContext;
+use Evento\Repositories\UserRepository;
 use Evento\Models\Validator;
 use Respect\Validation\Exceptions\NestedValidationException;
 
@@ -13,25 +14,24 @@ use Respect\Validation\Exceptions\NestedValidationException;
  */
 class AuthController extends AbstractController
 {
+    protected $repository;
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->repository = new UserRepository();
+    }
+
     /**
      * Return sign in view on GET request.
      */
     public function getSignIn($request, $response)
     {
-        if ($this->authHandler->isVerified()) {
-            return $this->redirect($response, 'Auth.Profile');
-        }
-
         return $this->view($response, 'Auth/SignIn.html');
     }
 
     /**
-     * Attempt to sign in user on POST request and does also
-     * perform sign in of an user by taking the parameters from
-     * the incoming request and attempts to validate the data
-     * model, fetch the user from the database and compare the
-     * incoming password against the password fetched from the
-     * database.
+     * Attempt to sign in user.
      *
      * @param Request $request
      * @param Response $response
@@ -40,63 +40,48 @@ class AuthController extends AbstractController
     public function postSignIn($request, $response)
     {
         $params = $request->getParams();
+        $data = ['params' => $params];
 
-        //Validate the incoming data
         try {
             Validator::signIn($params);
         } catch (NestedValidationException $e) {
-            //Validation of data fails
-        }
-        
-        $pdo = DatabaseContext::getContext();
-
-        //Try to get the user by email from the database
-        try {
-            $statement = $pdo
-                ->prepare('CALL getUserByEmail(?)');
-
-            $statement->bindParam(1, $params['email']);
-            $statement->execute();
-        } catch (PDOException $e) {
-            //Error performing data query
+            //Validation error
+            $data['validator'] = Validator::ERRORS['signIn'];
+            return $this->view($response, 'Auth/SignIn.html', $data);
         }
 
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $this->repository->read($params['email']);
 
-        //Fetch returns false on error or not found
-        if ($user !== false) {
-            $password = base64_encode(
-                hash('sha256', $params['password'], true)
-            );
-
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user'] = [
-                    'id' => $user['id'],
-                    'name' => $user['username'],
-                    'email' => $user['email'],
-                    'role' => $user['role'],
-                    $user['role'] => true
-                ];
-
-                /*if (isset($params['remember_me'])) {
-                    $expires = date('D, d M Y H:i:s e', strtotime('+1 months'));
-
-                    $response = $response
-                            ->withHeader('Set-Cookie', "3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Expires=$expires");
-
-                    var_dump($response->getHeaders());
-                }*/
-
-                //Sign in succeded
-                return $this->redirect($response, 'Auth.Profile');
-            }
+        if ($result instanceof PDOException) {
+            //Database error
+            $data['database'] = 'An unexpected error occurred.';
+            return $this->view($response, 'Auth/SignIn.html', $data);
         }
 
-        //Wrong password, email or database error
-        return $this->view($response, 'Auth/SignIn.html', [
-            'params' => $params,
-            'error' => Validator::ERRORS['signIn']
-        ]);
+        if ($result === null) {
+            //Not found
+            $data['validator'] = Validator::ERRORS['signIn'];
+            return $this->view($response, 'Auth/SignIn.html', $data);
+        }
+
+        $password = base64_encode(
+            hash('sha256', $params['password'], true)
+        );
+
+        if (password_verify($password, $result['password'])) {
+            $_SESSION['user'] = [
+                'id' => $result['id'],
+                'name' => $result['username'],
+                'email' => $result['email'],
+                'role' => $result['role'],
+                $result['role'] => true
+            ];
+
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
+        $data['validator'] = Validator::ERRORS['signIn'];
+        return $this->view($response, 'Auth/SignIn.html', $data);
     }
 
     /**
@@ -121,43 +106,31 @@ class AuthController extends AbstractController
     public function postSignUp($request, $response)
     {
         $params = $request->getParams();
+        $data = ['params' => $params];
 
         try {
             Validator::signUp($params);
         } catch (NestedValidationException $e) {
-            $errors = $e->findMessages(Validator::ERRORS['signUp']);
+            $data['validator'] = $e->findMessages(Validator::ERRORS['signUp']);
 
-            return $this->view($response, 'Auth/SignUp.html', [
-                'params' => $params,
-                'errors' => $errors
-            ]);
+            return $this->view($response, 'Auth/SignUp.html', $data);
         }
 
-        $pdo = DatabaseContext::getContext();
+        $result = $this->repository->create($params);
 
-        try {
-            $statement = $pdo
-                ->prepare('CALL insertUser(?, ?, ?)');
-
-            $password = password_hash(
-                base64_encode(
-                    hash('sha256', $params['password'], true)
-                ),
-                PASSWORD_BCRYPT
-            );
-
-            $statement->bindParam(1, $params['username']);
-            $statement->bindParam(2, $params['email']);
-            $statement->bindParam(3, $password);
-
-            $statement->execute();
-        } catch (PDOException $e) {
-            return $this->view($response, 'Auth/SignUp.html', [
-                'params' => $params
-            ]);
+        if ($result === null) {
+            return $this->redirect($response, 'Auth.SignIn');
         }
 
-        return $this->redirect($response, 'Auth.SignIn');
+        if ($result instanceof PDOException) {
+            if ($result->getCode() === '23000') {
+                $data['database'] = 'Please use another e-mail address.';
+            } else {
+                $data['database'] = 'An unexpected error occurred.';
+            }
+        }
+
+        return $this->view($response, 'Auth/SignUp.html', $data);
     }
 
     /**
@@ -169,14 +142,6 @@ class AuthController extends AbstractController
     {
         //Unset the user array of data
         unset($_SESSION['user']);
-
-        if ($request->getCookieParam('3dtnx6xd') !== null) {
-            //Remove cookie for remember me
-            //Expiration format Mon, 01 Jan 1970 00:00:00 UTC or seconds
-            $response = $response
-                ->withHeader('Set-Cookie', '3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0');
-        }
-
         return $this->redirect($response, 'Main');
     }
 
@@ -194,49 +159,49 @@ class AuthController extends AbstractController
     public function postProfile($request, $response)
     {
         $params = $request->getParams();
+        $params['email'] = $_SESSION['user']['email'];
+
+        $data = ['params' => $params];
 
         try {
             Validator::updateUser($params);
         } catch (NestedValidationException $e) {
-            $errors = $e->findMessages(Validator::ERRORS['updateUser']);
+            $data['validator'] = $e->findMessages(Validator::ERRORS['updateUser']);
 
-            return $this->view($response, 'Auth/Profile.html', [
-                'params' => $params,
-                'errors' => $errors
-            ]);
+            return $this->view($response, 'Auth/Profile.html', $data);
         }
 
-        $pdo = DatabaseContext::getContext();
+        $result = $this->repository->update($params);
 
-        try {
-            $statement = $pdo
-                ->prepare('CALL updateUser(?, ?, ?)');
-
-            $password = password_hash(
-                base64_encode(
-                    hash('sha256', $params['password'], true)
-                ),
-                PASSWORD_BCRYPT
-            );
-
-            $statement->bindParam(1, $params['id']);
-            $statement->bindParam(2, $params['username']);
-            $statement->bindParam(3, $password);
-
-            $statement->execute();
-        } catch (PDOException $e) {
-            var_dump($e);
-            return $this->view($response, 'Auth/Profile.html', [
-                'params' => $params,
-                'errors' => ['databatse' => 'Database error.']
-            ]);
+        if ($result === null) {
+            $_SESSION['user']['name'] = $params['username'];
+            return $this->redirect($response, 'Auth.Profile');
         }
 
-        $_SESSION['user']['name'] = $params['username'];
+        if ($result instanceof PDOException) {
+            $data['database'] = $result->getMessage();
+        }
 
-        return $this->view($response, 'Auth/Profile.html', [
-            'params' => ['username' => $params['username']],
-            'success' => true
-        ]);
+        return $this->view($response, 'Auth/Profile.html', $data);
     }
 }
+
+/*
+//Check for cookie with auth token
+
+if ($request->getCookieParam('3dtnx6xd') !== null) {
+    //Remove cookie for remember me
+    //Expiration format Mon, 01 Jan 1970 00:00:00 UTC or seconds
+    $response = $response
+        ->withHeader('Set-Cookie', '3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0');
+}
+*/
+
+/*
+//Set cookie with auth token
+
+if (isset($params['remember_me'])) {
+    $expires = date('D, d M Y H:i:s e', strtotime('+1 months'));
+    $response = $response>withHeader('Set-Cookie', "3dtnx6xd=; HttpOnly; Path=/; SameSite=Strict; Expires=$expires");
+}
+*/

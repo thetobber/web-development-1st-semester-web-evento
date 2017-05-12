@@ -28,8 +28,8 @@ class UserRepository extends AbstractRepository
                 PASSWORD_BCRYPT
             );
 
-            $statement->bindValue(1, $user['username'], PDO::PARAM_STR, 255);
-            $statement->bindValue(2, $user['email'], PDO::PARAM_STR, 255);
+            $statement->bindValue(1, $user['username'], PDO::PARAM_STR);
+            $statement->bindValue(2, $user['email'], PDO::PARAM_STR);
             $statement->bindValue(3, $password);
 
             $statement->execute();
@@ -51,7 +51,7 @@ class UserRepository extends AbstractRepository
     {
         try {
             $statement = $this->handle->prepare('CALL readUser(?)');
-            $statement->bindValue(1, $email, PDO::PARAM_STR, 255);
+            $statement->bindValue(1, $email, PDO::PARAM_STR);
 
             $statement->execute();
         } catch (PDOException $exeption) {
@@ -114,9 +114,9 @@ class UserRepository extends AbstractRepository
                 PASSWORD_BCRYPT
             );
 
-            $statement->bindParam(1, $user['email']);
-            $statement->bindParam(2, $user['username']);
-            $statement->bindParam(3, $password);
+            $statement->bindValue(1, $user['email'], PDO::PARAM_STR);
+            $statement->bindValue(2, $user['username'], PDO::PARAM_STR);
+            $statement->bindValue(3, $password);
 
             $statement->execute();
         } catch (PDOException $exeption) {
@@ -137,7 +137,7 @@ class UserRepository extends AbstractRepository
     {
         try {
             $statement = $this->handle->prepare('CALL deleteUser(?)');
-            $statement->bindParam(1, $email);
+            $statement->bindValue(1, $email, PDO::PARAM_STR);
 
             $statement->execute();
         } catch (PDOException $exeption) {

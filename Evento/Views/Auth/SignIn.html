@@ -16,13 +16,8 @@
             <label for="password">Password</label>
             <input id="password" name="password" type="password" placeholder="Password">
 
-            <label class="checkbox">
-                <input name="remember_me" type="checkbox" value="Yes">
-                <span>Remember me?</span>
-            </label>
-
-            {% if error %}
-                <div class="error-block">{{ error }}</div>
+            {% if database %}
+                <div class="error-block">{{ database }}</div>
             {% endif %}
 
             <button type="submit">Sign in</button>

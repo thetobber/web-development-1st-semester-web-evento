@@ -32,8 +32,6 @@ class Validator
         ],
         'updateUser' => [
             'username' => 'Your username must be between 1 and 255 characters.',
-            'email' => 'You must use a valid e-mail address.',
-            'password_old' => 'Your password must be between 5 and 255 characters.',
             'password' => 'Your password must be between 5 and 255 characters.',
             'password_confirmation' => 'You must enter the same password.'
         ]
@@ -103,11 +101,9 @@ class Validator
     {
         if (!isset(static::$validators['updateUser'])) {
             static::$validators['updateUser'] = Respect::arrayType()
-                ->key('id',
-                    Respect::intVal()
-                )
                 ->key('username',
                     Respect::noWhitespace()
+                        ->notEmpty()
                         ->length(1, 255)
                 )
                 ->key('password',

@@ -75,25 +75,24 @@ CREATE TRIGGER `user_tokens_date`
 #Procedures
 DELIMITER //
 
-#Insert user
-CREATE DEFINER = 'evento'@'localhost' PROCEDURE insertUser
+#Create user
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE createUser
 (
     IN inUsername VARCHAR(255),
     IN inEmail VARCHAR(255),
     IN inPassword VARCHAR(255)
 )
 BEGIN
-    INSERT INTO `users` (`username`, `email`, `password`) VALUES
-        (inUsername, inEmail, inPassword);
+    INSERT INTO `users` (`role_id`, `username`, `email`, `password`) VALUES
+        (1, inUsername, inEmail, inPassword);
 END//
 
-#Get user
-CREATE DEFINER = 'evento'@'localhost' PROCEDURE getUserByEmail
+#Read user
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE readUser
 (
     IN inEmail VARCHAR(255)
 )
 BEGIN
-    #SELECT * FROM `users` WHERE `email` = inEmail;
     SELECT `users`.`id`,
            `users`.`username`,
            `users`.`email`,
@@ -105,19 +104,29 @@ BEGIN
     WHERE `users`.`email` = inEmail;
 END//
 
-#Get user
-CREATE DEFINER = 'evento'@'localhost' PROCEDURE getUserById
+#Read users
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE readUsers
 (
-    IN inId BIGINT UNSIGNED
+    IN inLimit BIGINT UNSIGNED,
+    IN inOffset BIGINT UNSIGNED
 )
 BEGIN
-    SELECT `id`, `username`, `email`, `password` FROM `users` WHERE `id` = inId;
+    SELECT `users`.`id`,
+           `users`.`username`,
+           `users`.`email`,
+           `users`.`password`,
+           `roles`.`role`
+    FROM `users`
+    INNER JOIN `roles`
+    ON `users`.`role_id` = `roles`.`id`
+    LIMIT inLimit OFFSET inOffset
+    ORDER BY `users`.`id` DESC;
 END//
 
 #Update user
 CREATE DEFINER = 'evento'@'localhost' PROCEDURE updateUser
 (
-    IN inId BIGINT UNSIGNED,
+    IN inEmail VARCHAR(255),
     IN inUsername VARCHAR(255),
     IN inPassword VARCHAR(255)
 )
@@ -125,16 +134,16 @@ BEGIN
     UPDATE `users` SET
         `username` = inUsername,
         `password` = inPassword
-    WHERE `id` = inId;
+    WHERE `email` = inEmail;
 END//
 
 #Delete user
 CREATE DEFINER = 'evento'@'localhost' PROCEDURE deleteUser
 (
-    IN inId BIGINT UNSIGNED
+    IN inEmail VARCHAR(255)
 )
 BEGIN
-    DELETE FROM `users` WHERE `id` = inId;
+    DELETE FROM `users` WHERE `email` = inEmail;
 END//
 
 DELIMITER ;

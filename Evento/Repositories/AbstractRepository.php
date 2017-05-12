@@ -1,6 +1,8 @@
 <?php
 namespace Evento\Repositories;
 
+use Evento\Models\DatabaseContext;
+
 abstract class AbstractRepository
 {
     /**
@@ -13,7 +15,7 @@ abstract class AbstractRepository
     /**
      * Get static instance of PDO to communicate with the database.
      */
-    public function __contruct()
+    public function __construct()
     {
         $this->handle = DatabaseContext::getInstance();
     }

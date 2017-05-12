@@ -38,7 +38,7 @@ class DatabaseContext
                     'nhQrQQzf7C6mTybsm47Hy4ae',
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_EMULATE_PREPARES => false
+                        PDO::ATTR_EMULATE_PREPARES => true
                     ]
                 );
             } catch (PDOException $exception) {

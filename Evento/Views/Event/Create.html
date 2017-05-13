@@ -1,0 +1,57 @@
+{% extends 'Shared/Layout.html' %}
+
+{% block head %}
+    {{ parent() }}
+    <title>Evento - Create event</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Main</h2>
+    
+
+    <div>
+        <span>UTC&nbsp;</span>
+        <select name="timezone" id="timezone">
+            <option value="-12:00">-12:00</option>
+            <option value="-11:00">-11:00</option>
+            <option value="-10:00">-10:00</option>
+            <option value="-09:30">-09:30</option>
+            <option value="-09:00">-09:00</option>
+            <option value="-08:00">-08:00</option>
+            <option value="-07:00">-07:00</option>
+            <option value="-06:00">-06:00</option>
+            <option value="-05:00">-05:00</option>
+            <option value="-04:00">-04:00</option>
+            <option value="-03:30">-03:30</option>
+            <option value="-03:00">-03:00</option>
+            <option value="-02:00">-02:00</option>
+            <option value="-01:00">-01:00</option>
+            <option value="-00:00" selected>-00:00</option>
+            <option value="+01:00">+01:00</option>
+            <option value="+02:00">+02:00</option>
+            <option value="+03:00">+03:00</option>
+            <option value="+03:30">+03:30</option>
+            <option value="+04:00">+04:00</option>
+            <option value="+04:30">+04:30</option>
+            <option value="+05:00">+05:00</option>
+            <option value="+05:30">+05:30</option>
+            <option value="+05:45">+05:45</option>
+            <option value="+06:00">+06:00</option>
+            <option value="+06:30">+06:30</option>
+            <option value="+07:00">+07:00</option>
+            <option value="+08:00">+08:00</option>
+            <option value="+08:30">+08:30</option>
+            <option value="+08:45">+08:45</option>
+            <option value="+09:00">+09:00</option>
+            <option value="+09:30">+09:30</option>
+            <option value="+10:00">+10:00</option>
+            <option value="+10:30">+10:30</option>
+            <option value="+11:00">+11:00</option>
+            <option value="+12:00">+12:00</option>
+            <option value="+12:45">+12:45</option>
+            <option value="+13:00">+13:00</option>
+            <option value="+14:00">+14:00</option>
+        </select>
+    </div>
+
+{% endblock %}

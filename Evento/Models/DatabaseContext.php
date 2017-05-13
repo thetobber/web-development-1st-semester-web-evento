@@ -30,6 +30,8 @@ class DatabaseContext
      */
     public static function getInstance()
     {
+        //PDO::MYSQL_ATTR_INIT_COMMAND
+
         if (static::$pdo === null) {
             try {
                 static::$pdo = new PDO(
@@ -37,6 +39,9 @@ class DatabaseContext
                     'evento',
                     'nhQrQQzf7C6mTybsm47Hy4ae',
                     [
+                        PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = 'Europe/Copenhagen';",
+                        PDO::ATTR_PERSISTENT => true,
+                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_EMULATE_PREPARES => true
                     ]
@@ -48,6 +53,7 @@ class DatabaseContext
                 */
 
                 //return $exception;
+                var_dump($exception);
 
                 header('HTTP/1.1 500 Internal Server Error', true);
                 die('Could not connect to database.');

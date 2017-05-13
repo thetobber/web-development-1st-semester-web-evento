@@ -8,6 +8,23 @@ ini_set('session.cookie_secure', 0);
 ini_set('session.cookie_lifetime', 0);
 
 session_start();
+date_default_timezone_set('Europe/Copenhagen');
+
+/*
+Insert timezones in MySQL database
+https://dev.mysql.com/downloads/timezones.html
+
+DATE format
+MySQL: YYYY-MM-DD
+PHP:   Y-m-d
+
+DATETIME format
+MySQL: YYYY-MM-DD HH:MM:SS
+PHP:   Y-m-d H:i:s
+
+Possible shown like this:
+d-m-Y H:i:s \U\T\C P
+*/
 
 require(__DIR__.'/../Vendor/autoload.php');
 
@@ -20,6 +37,7 @@ use Evento\Middleware\GuestMiddleware;
 use Evento\Middleware\AuthMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
+use Evento\Controllers\EventController;
 
 $app = new App([
     'settings' => [
@@ -56,6 +74,10 @@ $container['mainCtrl'] = function ($c) {
     return new MainController($c);
 };
 
+$container['eventCtrl'] = function ($c) {
+    return new EventController($c);
+};
+
 $app->add(new GeneralMiddleware($container));
 
 //Group only accessible when NOT signed in
@@ -84,7 +106,9 @@ $app->group('', function () {
 })
 ->add(new AuthMiddleware($container));
 
-
+// Main routes
+$app->get('/event/create', 'eventCtrl:getCreate')
+    ->setName('Event.Create');
 
 // Main routes
 $app->get('/', 'mainCtrl:getIndex')

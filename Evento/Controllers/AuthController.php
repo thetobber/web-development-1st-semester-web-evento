@@ -6,6 +6,7 @@ use PDOException;
 use Evento\Models\DatabaseContext;
 use Evento\Repositories\UserRepository;
 use Evento\Models\Validator;
+use Evento\Models\AuthHandler;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
@@ -24,6 +25,10 @@ class AuthController extends AbstractController
 
     /**
      * Return sign in view on GET request.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      */
     public function getSignIn($request, $response)
     {

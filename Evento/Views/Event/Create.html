@@ -10,8 +10,9 @@
     
 
     <div>
-        <span>UTC&nbsp;</span>
-        <select name="timezone" id="timezone">
+        <input type="text" name="timezone" list="timezone" pattern="[0-9]{4}">
+
+        <datalist id="timezone" style="max-height: 200px; overflow-y: auto;">
             <option value="-12:00">-12:00</option>
             <option value="-11:00">-11:00</option>
             <option value="-10:00">-10:00</option>
@@ -26,7 +27,7 @@
             <option value="-03:00">-03:00</option>
             <option value="-02:00">-02:00</option>
             <option value="-01:00">-01:00</option>
-            <option value="-00:00" selected>-00:00</option>
+            <option value="-00:00">-00:00</option>
             <option value="+01:00">+01:00</option>
             <option value="+02:00">+02:00</option>
             <option value="+03:00">+03:00</option>
@@ -51,7 +52,6 @@
             <option value="+12:45">+12:45</option>
             <option value="+13:00">+13:00</option>
             <option value="+14:00">+14:00</option>
-        </select>
+        </datalist>
     </div>
-
 {% endblock %}

@@ -62,10 +62,4 @@ class DatabaseContext
         
         return static::$pdo;
     }
-
-    //TODO: Delete this in favor of static::getInstance()
-    public static function getContext()
-    {
-        return static::getInstance();
-    }
 }

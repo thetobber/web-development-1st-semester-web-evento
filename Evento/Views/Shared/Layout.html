@@ -24,13 +24,15 @@
         {% endif %}
     </nav>
 
-
-
     <main class="container">
         <div class="card">
             {% block body %}{% endblock %}
         </div>
     </main>
+
+
+    <script type="text/javascript" src="{{ base_url() }}/Assets/http.js"></script>
+    {% block footer %}{% endblock %}
 </body>
 
 </html>

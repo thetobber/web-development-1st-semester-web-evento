@@ -23,10 +23,7 @@ class UserRepository extends AbstractRepository
         try {
             $statement = $this->handle->prepare('CALL createUser(?, ?, ?)');
 
-            $password = password_hash(
-                base64_encode(hash('sha256', $user['password'], true)),
-                PASSWORD_BCRYPT
-            );
+            $password = password_hash($user['password'], PASSWORD_BCRYPT);
 
             $statement->bindValue(1, $user['username'], PDO::PARAM_STR);
             $statement->bindValue(2, $user['email'], PDO::PARAM_STR);
@@ -109,10 +106,7 @@ class UserRepository extends AbstractRepository
         try {
             $statement = $this->handle->prepare('CALL updateUser(?, ?, ?)');
 
-            $password = password_hash(
-                base64_encode(hash('sha256', $user['password'], true)),
-                PASSWORD_BCRYPT
-            );
+            $password = password_hash($user['password'], PASSWORD_BCRYPT);
 
             $statement->bindValue(1, $user['email'], PDO::PARAM_STR);
             $statement->bindValue(2, $user['username'], PDO::PARAM_STR);

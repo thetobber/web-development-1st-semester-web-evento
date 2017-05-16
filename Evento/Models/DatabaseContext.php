@@ -62,4 +62,9 @@ class DatabaseContext
         
         return static::$pdo;
     }
+
+    public static function closeConnection()
+    {
+        $this->pdo = null;
+    }
 }

@@ -20,6 +20,10 @@
                 <div class="error-block">{{ database }}</div>
             {% endif %}
 
+            {% if validator %}
+                <div class="error-block">{{ validator }}</div>
+            {% endif %}
+
             <button type="submit">Sign in</button>
         </fieldset>
     </form>

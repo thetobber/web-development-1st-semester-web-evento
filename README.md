@@ -10,16 +10,16 @@
         <td>Name</td>
         <td>Datatype</td>
         <td>Length</td>
-        <td>Unsigned</td>
-        <td>Allow NULL</td>
-        <td>Zerofill</td>
+        <td align="center">Unsigned</td>
+        <td align="center">Allow NULL</td>
+        <td align="center">Zerofill</td>
         <td>Default</td>
     </tr>
     <tr>
         <td>Id</td>
         <td>BIGINT</td>
         <td>20</td>
-        <td>&#9745;</td>
+        <td>✓</td>
         <td></td>
         <td></td>
         <td>AUTO_INCREMENT</td>
@@ -55,9 +55,9 @@
         <td>Name</td>
         <td>Datatype</td>
         <td>Length</td>
-        <td>Unsigned</td>
-        <td>Allow NULL</td>
-        <td>Zerofill</td>
+        <td aligne="center">Unsigned</td>
+        <td aligne="center">Allow NULL</td>
+        <td aligne="center">Zerofill</td>
         <td>Default</td>
     </tr>
     <tr>

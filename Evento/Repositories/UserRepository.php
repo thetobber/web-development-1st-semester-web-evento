@@ -4,6 +4,7 @@ namespace Evento\Repositories;
 use PDO;
 use PDOException;
 use Evento\Models\DatabaseContext;
+use Evento\Repositories\RepositoryResult as Result;
 
 /**
  * Represents a repository layer for CRUD actions on the users. 

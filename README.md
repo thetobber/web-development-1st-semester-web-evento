@@ -2,18 +2,18 @@
 
 <table>
     <tr>
-        <td colspan="7">
+        <th colspan="7">
             <b>Country</b>
-        </td>
+        </th>
     </tr>
     <tr>
-        <td>Name</td>
-        <td>Datatype</td>
-        <td>Length</td>
-        <td align="center">Unsigned</td>
-        <td align="center">Allow NULL</td>
-        <td align="center">Zerofill</td>
-        <td>Default</td>
+        <th>Name</th>
+        <th>Datatype</th>
+        <th>Length</th>
+        <th align="center">Unsigned</th>
+        <th align="center">Allow NULL</th>
+        <th align="center">Zerofill</th>
+        <th>Default</th>
     </tr>
     <tr>
         <td>Id</td>

@@ -1,20 +1,14 @@
 ### Country
-
 <table>
     <tr>
-        <td colspan="7">
-            <b>Country</b>
-        </td>
-    </tr>
-    <tr>
         <td></td>
-        <td>Name</td>
-        <td>Datatype</td>
-        <td>Length</td>
-        <td>Unsigned</td>
-        <td>Allow NULL</td>
-        <td>Zerofill</td>
-        <td>Default</td>
+        <td><b>Name</b></td>
+        <td><b>Datatype</b></td>
+        <td><b>Length</b></td>
+        <td><b>Unsigned</b></td>
+        <td><b>Allow NULL</b></td>
+        <td><b>Zerofill</b></td>
+        <td><b>Default</b></td>
     </tr>
     <tr>
         <td>PK</td>
@@ -48,21 +42,17 @@
     </tr>
 </table>
 
+### Administrative area
 <table>
     <tr>
-        <td colspan="7">
-            <b>Administrative_area</b>
-        </td>
-    </tr>
-    <tr>
         <td></td>
-        <td>Name</td>
-        <td>Datatype</td>
-        <td>Length</td>
-        <td>Unsigned</td>
-        <td>Allow NULL</td>
-        <td>Zerofill</td>
-        <td>Default</td>
+        <td><b>Name</b></td>
+        <td><b>Datatype</b></td>
+        <td><b>Length</b></td>
+        <td><b>Unsigned</b></td>
+        <td><b>Allow NULL</b></td>
+        <td><b>Zerofill</b></td>
+        <td><b>Default</b></td>
     </tr>
     <tr>
         <td>PK</td>
@@ -104,19 +94,14 @@
 
 <table>
     <tr>
-        <td colspan="7">
-            <b></b>
-        </td>
-    </tr>
-    <tr>
         <td></td>
-        <td>Name</td>
-        <td>Datatype</td>
-        <td>Length</td>
-        <td>Unsigned</td>
-        <td>Allow NULL</td>
-        <td>Zerofill</td>
-        <td>Default</td>
+        <td><b>Name</b></td>
+        <td><b>Datatype</b></td>
+        <td><b>Length</b></td>
+        <td><b>Unsigned</b></td>
+        <td><b>Allow NULL</b></td>
+        <td><b>Zerofill</b></td>
+        <td><b>Default</b></td>
     </tr>
     <tr>
         <td></td>

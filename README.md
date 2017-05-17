@@ -1,5 +1,5 @@
 ### Country
 
-| **Country**               |
+| **Country** |             |
 | ----------- | ----------- |
 | Name        | Code        |

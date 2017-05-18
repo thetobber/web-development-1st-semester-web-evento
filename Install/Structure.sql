@@ -62,7 +62,7 @@ CREATE TABLE `user_token` (
 --
 CREATE TABLE `category` (
     `id`   SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
+    `name` VARCHAR(80) NOT NULL,
 
     PRIMARY KEY (`id`),
     UNIQUE INDEX(`name`) USING HASH
@@ -98,8 +98,8 @@ CREATE TABLE `city` (
 --
 CREATE TABLE `address` (
     `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `address1`    VARCHAR(50) NOT NULL,
-    `address2`    VARCHAR(50),
+    `address1`    VARCHAR(60) NOT NULL,
+    `address2`    VARCHAR(60),
     `district`    VARCHAR(20),
     `city_id`     MEDIUMINT UNSIGNED NOT NULL,
     `postal_code` VARCHAR(10),

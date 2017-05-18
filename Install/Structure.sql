@@ -77,7 +77,7 @@ CREATE TABLE `country` (
     `code` CHAR(2) NOT NULL,
 
     PRIMARY KEY (`id`),
-    UNIQUE INDEX (`code`) USING HASH
+    UNIQUE INDEX (`name`, `code`) USING HASH
 );
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `city` (
     `country_id` SMALLINT UNSIGNED NOT NULL,
 
     PRIMARY KEY (`id`),
-    UNIQUE INDEX (`name`) USING HASH,
+    UNIQUE INDEX (`name`, `country_id`) USING HASH,
     FOREIGN KEY (`country_id`) REFERENCES `country` (`id`)
 );
 

@@ -29,8 +29,14 @@ class AuthHandler
 
     public function setUserSession(array $user)
     {
+        unset($user['password']);
         $user[Role::NAME[$user['role']]] = true;
         $_SESSION['user'] = $user;
+    }
+
+    public function verifyPassword($password, $hash)
+    {
+        return password_verify($password, $hash);
     }
 
     public function isVerified()

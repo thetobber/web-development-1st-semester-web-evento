@@ -73,27 +73,36 @@ class UserRepository extends AbstractRepository
     /**
      * Read a single user record from the database by username.
      */
-    public function read($username)
+    public function read(array $user)
     {
-        $errorList = [];
+        $ruleSet = Respect::arrayType()
+            ->key('username', Respect::noWhiteSpace()->length(1, 250));
+
+        try {
+            $ruleSet->assert($user);
+        } catch (NestedValidationException $exception) {
+            return new Result(null, Result::ERROR, [
+                'credentials' => 'Wrong username or password.'
+            ]);
+        }
 
         try {
             $statement = $this->handle->prepare('CALL readUser(?)');
-            $statement->bindValue(1, $username, PDO::PARAM_STR);
+            $statement->bindValue(1, $user['username'], PDO::PARAM_STR);
 
             $statement->execute();
-        } catch (PDOException $exeption) {
-            return new Result(null, Result::ERROR, $errorList);
-        }
 
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
-        $statement->closeCursor();
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+            $statement->closeCursor();
 
-        if ($user !== false) {
-            return new Result($user, Result::SUCCESS);
-        }
+            if ($user !== false) {
+                return new Result($user, Result::SUCCESS);
+            }
+        } catch (PDOException $exeption) {}
 
-        return new Result(null, Result::NOT_FOUND);
+        return new Result(null, Result::ERROR, [
+            'credentials' => 'Wrong username or password.'
+        ]);
     }
 
     /**
@@ -127,42 +136,55 @@ class UserRepository extends AbstractRepository
     }
 
     /**
-     * Update a single user record from the database by email.
-     *
-     * @param array $user
-     * @return null|PDOException
+     * Update a single user record from the database by username.
      */
     public function update(array $user)
     {
+        //Create rule set for model
+        $ruleSet = Respect::arrayType()
+            ->key('email', Respect::email())
+            ->key('password', Respect::length(12, 4096))
+            ->keyValue('password_confirmation', 'equals', 'password');
+        
+        //Validate model with ruleset
+        try {
+            $ruleSet->assert($user);
+        } catch (NestedValidationException $exception) {
+            $errorList = $exception->findMessages([
+                'email' => 'Please enter a valid e-mail address.',
+                'password' => 'Password must be 12-4096 characters.',
+                'password_confirmation' => 'Confirmation must be equal to password.'
+            ]);
+
+            return new Result(null, Result::ERROR, $errorList);
+        }
+
         try {
             $statement = $this->handle->prepare('CALL updateUser(?, ?, ?)');
 
             $password = password_hash($user['password'], PASSWORD_BCRYPT);
 
-            $statement->bindValue(1, $user['email'], PDO::PARAM_STR);
-            $statement->bindValue(2, $user['username'], PDO::PARAM_STR);
+            $statement->bindValue(1, $user['username'], PDO::PARAM_STR);
+            $statement->bindValue(2, $user['email'], PDO::PARAM_STR);
             $statement->bindValue(3, $password);
 
             $statement->execute();
         } catch (PDOException $exeption) {
-            return $exeption;
+            return new Result(null, Result::ERROR);
         }
 
         $statement->closeCursor();
-        return null;
+        return new Result(null, Result::SUCCESS);
     }
 
     /**
-     * Delete a single user record from the database by email.
-     *
-     * @param string $email
-     * @return null|PDOException
+     * Delete a single user record from the database by username.
      */
-    public function delete($email)
+    public function delete(array $user)
     {
         try {
             $statement = $this->handle->prepare('CALL deleteUser(?)');
-            $statement->bindValue(1, $email, PDO::PARAM_STR);
+            $statement->bindValue(1, $username, PDO::PARAM_STR);
 
             $statement->execute();
         } catch (PDOException $exeption) {

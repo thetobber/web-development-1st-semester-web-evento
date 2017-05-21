@@ -31,6 +31,8 @@
                 <div class="error-block">{{ validator.password_confirmation }}</div>
             {% endif %}
 
+            {{user|json_encode}}
+
             <button type="submit">Update</button>
         </fieldset>
     </form>

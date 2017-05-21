@@ -18,12 +18,12 @@ class RepositoryResult
         $this->errorMessages = $errorMessages;
     }
 
-    public function getResult()
+    public function getContent()
     {
         return $this->result;
     }
 
-    public function hasResult()
+    public function hasContent()
     {
         return $this->code === self::SUCCESS && $this->result !== null;
     }

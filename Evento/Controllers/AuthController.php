@@ -45,48 +45,33 @@ class AuthController extends AbstractController
     public function postSignIn($request, $response)
     {
         $params = $request->getParams();
-        $data = ['params' => $params];
+        $errors = [];
 
-        try {
-            Validator::signIn($params);
-        } catch (NestedValidationException $e) {
-            //Validation error
-            $data['validator'] = Validator::ERRORS['signIn'];
-            return $this->view($response, 'Auth/SignIn.html', $data);
+        $result = $this->repository->read($params);
+
+        if ($result->hasContent()) {
+            $isVerified = password_verify(
+                $params['password'],
+                $result->getContent()['password']
+            );
+
+            if ($isVerified) {
+                $this->authHandler
+                    ->setUserSession($result->getContent());
+
+                return $this->redirect($response, 'Auth.Profile');
+            } else {
+                return $this->view($response, 'Auth/SignIn.html', [
+                    'params' => $params,
+                    'errors' => ['credentials' => 'Wrong username or password.']
+                ]);
+            }
         }
 
-        $result = $this->repository->read($params['email']);
-
-        if ($result instanceof PDOException) {
-            //Database error
-            $data['database'] = 'An unexpected error occurred.';
-            return $this->view($response, 'Auth/SignIn.html', $data);
-        }
-
-        if ($result === null) {
-            //Not found
-            $data['validator'] = Validator::ERRORS['signIn'];
-            return $this->view($response, 'Auth/SignIn.html', $data);
-        }
-
-        $password = base64_encode(
-            hash('sha256', $params['password'], true)
-        );
-
-        if (password_verify($password, $result['password'])) {
-            $_SESSION['user'] = [
-                'id' => $result['id'],
-                'name' => $result['username'],
-                'email' => $result['email'],
-                'role' => $result['role'],
-                $result['role'] => true
-            ];
-
-            return $this->redirect($response, 'Auth.Profile');
-        }
-
-        $data['validator'] = Validator::ERRORS['signIn'];
-        return $this->view($response, 'Auth/SignIn.html', $data);
+        return $this->view($response, 'Auth/SignIn.html', [
+            'params' => $params,
+            'errors' => $result->getErrorMessages()
+        ]);
     }
 
     /**
@@ -132,7 +117,7 @@ class AuthController extends AbstractController
     public function getSignOut($request, $response)
     {
         //Unset the user array of data
-        unset($_SESSION['user']);
+        $this->authHandler->unsetUserSession();
         return $this->redirect($response, 'Main');
     }
 

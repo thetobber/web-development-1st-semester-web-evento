@@ -13,14 +13,14 @@ abstract class AbstractController
     {
         $this->view = $container->view;
         $this->router = $container->router;
+        $this->authHandler = $container->authHandler;
         $this->container = $container;
     }
 
     protected function redirect($response, $path)
     {
         return $response->withRedirect(
-            $this->router
-                ->pathFor($path)
+            $this->router->pathFor($path)
         );
     }
 

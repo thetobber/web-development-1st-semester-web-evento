@@ -10,18 +10,14 @@
         <fieldset>
             <legend>Sign in</legend>
 
-            <label for="email">E-mail</label>
-            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email }}">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username" value="{{ params.username }}">
             
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Password">
+            <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
 
-            {% if database %}
-                <div class="error-block">{{ database }}</div>
-            {% endif %}
-
-            {% if validator %}
-                <div class="error-block">{{ validator }}</div>
+            {% if errors.credentials %}
+                <div class="error-block">{{ errors.credentials }}</div>
             {% endif %}
 
             <button type="submit">Sign in</button>

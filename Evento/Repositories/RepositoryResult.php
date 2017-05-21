@@ -1,33 +1,50 @@
 <?php
 namespace Evento\Repositories;
 
-use Evento\Repositories\RepositoryError as Error;
-
 class RepositoryResult
 {
     protected $result;
-    protected $errorCode;
-    protected $errorMessage;
+    protected $code;
+    protected $errorMessages;
 
-    public function __construct($result, $errorCode = Error::DEFAULT, $errorMessage = Error::REASON[Error::DEFAULT])
+    const ERROR = 0;
+    const SUCCESS = 1;
+    const NOT_FOUND = 2;
+
+    public function __construct($result, $code, $errorMessages = [])
     {
         $this->result = $result;
-        $this->errorCode = $errorCode;
-        $this->errorMessage = $errorMessage;
+        $this->code = $code;
+        $this->errorMessages = $errorMessages;
+    }
+
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    public function hasResult()
+    {
+        return $this->code === self::SUCCESS && $this->result !== null;
     }
 
     public function hasSuccess()
     {
-        return $this->errorCode === Error::SUCCESS;
+        return $this->code === self::SUCCESS;
     }
 
-    public function getErrorCode()
+    public function notFound()
     {
-        return $this->errorCode;
+        return $this->code === self::NOT_FOUND;
     }
 
-    public function getErrorMessage()
+    public function getCode()
     {
-        return $this->errorMessage;
+        return $this->code;
+    }
+
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
     }
 }

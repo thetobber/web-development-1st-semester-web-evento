@@ -22,6 +22,17 @@ class AuthHandler
         unset($_SESSION['user']);
     }
 
+    public function unsetUserSession()
+    {
+        unset($_SESSION['user']);
+    }
+
+    public function setUserSession(array $user)
+    {
+        $user[Role::NAME[$user['role']]] = true;
+        $_SESSION['user'] = $user;
+    }
+
     public function isVerified()
     {
         return isset($_SESSION['user']);

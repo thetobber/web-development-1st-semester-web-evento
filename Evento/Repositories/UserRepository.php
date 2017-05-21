@@ -4,70 +4,100 @@ namespace Evento\Repositories;
 use PDO;
 use PDOException;
 use Evento\Models\DatabaseContext;
+use Evento\Models\Role;
 use Evento\Repositories\RepositoryResult as Result;
+use Respect\Validation\Validator as Respect;
+use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
- * Represents a repository layer for CRUD actions on the users. 
- * These actions are initiated with prepared statements and then 
+ * Represents a repository layer for CRUD actions on the users.
+ * These actions are initiated with prepared statements and then
  * executed with a stored procedure by the database system.
  */
 class UserRepository extends AbstractRepository
 {
     /**
      * Create a single user and insert it into the database.
-     *
-     * @param array $user
-     * @return null|PDOException
      */
     public function create(array $user)
     {
+        //Create rule set for model
+        $ruleSet = Respect::arrayType()
+            ->key('username', Respect::noWhiteSpace()->length(1, 250))
+            ->key('email', Respect::email())
+            ->key('password', Respect::length(12, 4096))
+            ->keyValue('password_confirmation', 'equals', 'password');
+        
+        //Validate model with ruleset
         try {
-            $statement = $this->handle->prepare('CALL createUser(?, ?, ?)');
+            $ruleSet->assert($user);
+        } catch (NestedValidationException $exception) {
+            $errorList = $exception->findMessages([
+                'username' => 'Username must be 1-250 characters containing no whitespace.',
+                'email' => 'Please enter a valid e-mail address.',
+                'password' => 'Password must be 12-4096 characters.',
+                'password_confirmation' => 'Confirmation must be equal to password.'
+            ]);
+
+            return new Result(null, Result::ERROR, $errorList);
+        }
+
+        //Attempt to create the new record
+        try {
+            $statement = $this->handle->prepare('CALL createUser(?, ?, ?, ?)');
 
             $password = password_hash($user['password'], PASSWORD_BCRYPT);
 
-            $statement->bindValue(1, $user['username'], PDO::PARAM_STR);
-            $statement->bindValue(2, $user['email'], PDO::PARAM_STR);
-            $statement->bindValue(3, $password);
+            $statement->bindValue(1, Role::MEMBER, PDO::PARAM_INT);
+            $statement->bindValue(2, $user['username'], PDO::PARAM_STR);
+            $statement->bindValue(3, $user['email'], PDO::PARAM_STR);
+            $statement->bindValue(4, $password);
 
             $statement->execute();
-        } catch (PDOException $exeption) {
-            return $exeption;
+        } catch (PDOException $exception) {
+            $errorList = [];
+
+            if ($exception->getCode() == '23000') {
+                $errorList['username'] = 'Username already exists.';
+            } else {
+                $errorList['database'] = 'An unexpected error occurred.';
+            }
+
+            return new Result(null, Result::ERROR, $errorList);
         }
 
         $statement->closeCursor();
-        return null;
+        return new Result(null, Result::SUCCESS);
     }
 
     /**
-     * Read a single user record from the database by email.
-     *
-     * @param string $email
-     * @return array|null|PDOException
+     * Read a single user record from the database by username.
      */
-    public function read($email)
+    public function read($username)
     {
+        $errorList = [];
+
         try {
             $statement = $this->handle->prepare('CALL readUser(?)');
-            $statement->bindValue(1, $email, PDO::PARAM_STR);
+            $statement->bindValue(1, $username, PDO::PARAM_STR);
 
             $statement->execute();
         } catch (PDOException $exeption) {
-            return $exeption;
+            return new Result(null, Result::ERROR, $errorList);
         }
 
         $user = $statement->fetch(PDO::FETCH_ASSOC);
         $statement->closeCursor();
 
         if ($user !== false) {
-            return $user;
+            return new Result($user, Result::SUCCESS);
         }
 
-        return null;
+        return new Result(null, Result::NOT_FOUND);
     }
 
     /**
-     * Read multiple user records from the database filtered by a 
+     * Read multiple user records from the database filtered by a
      * limit and an offset.
      *
      * @param int $limit

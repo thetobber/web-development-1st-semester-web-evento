@@ -111,31 +111,17 @@ class AuthController extends AbstractController
     public function postSignUp($request, $response)
     {
         $params = $request->getParams();
-        $data = ['params' => $params];
-
-        try {
-            Validator::signUp($params);
-        } catch (NestedValidationException $e) {
-            $data['validator'] = $e->findMessages(Validator::ERRORS['signUp']);
-
-            return $this->view($response, 'Auth/SignUp.html', $data);
-        }
 
         $result = $this->repository->create($params);
 
-        if ($result === null) {
+        if ($result->hasSuccess()) {
             return $this->redirect($response, 'Auth.SignIn');
         }
 
-        if ($result instanceof PDOException) {
-            if ($result->getCode() === '23000') {
-                $data['database'] = 'Please use another e-mail address.';
-            } else {
-                $data['database'] = 'An unexpected error occurred.';
-            }
-        }
-
-        return $this->view($response, 'Auth/SignUp.html', $data);
+        return $this->view($response, 'Auth/SignUp.html', [
+            'params' => $params,
+            'errors' => $result->getErrorMessages()
+        ]);
     }
 
     /**

@@ -52,7 +52,10 @@ CREATE DEFINER = 'evento'@'localhost' PROCEDURE updateUser
     IN inPassword VARCHAR(4096)
 )
 BEGIN
-    UPDATE `user` SET `email` = inEmail, `password` = inPassword WHERE `username` = inUsername;
+    UPDATE `user` SET
+        `email` = inEmail,
+        `password` = inPassword
+        WHERE `username` = inUsername;
 END//
 
 --

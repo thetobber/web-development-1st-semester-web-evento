@@ -6,12 +6,14 @@ CREATE SCHEMA `evento`
     CHARACTER SET = 'utf8mb4'
     COLLATE 'utf8mb4_unicode_ci';
 
-#Create user
 CREATE USER 'evento'@'localhost'
     IDENTIFIED BY 'nhQrQQzf7C6mTybsm47Hy4ae';
 
-#Grants
+CREATE USER 'evento_app'@'%'
+    IDENTIFIED BY 'OAnQtc0YjVZuzQ2ovrEg';
+
 GRANT ALL ON evento.* TO 'evento'@'localhost';
+GRANT EXECUTE ON evento.* TO 'evento_app'@'%';
 
 USE `evento`;
 
@@ -23,7 +25,6 @@ CREATE TABLE `user` (
     `role`            TINYINT UNSIGNED NOT NULL,
     `username`        VARCHAR(250) NOT NULL,
     `email`           VARCHAR(250) NOT NULL,
-    `email_confirmed` BOOLEAN DEFAULT 0,
     `password`        BINARY(60) NOT NULL,
     `created`         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -39,7 +40,8 @@ CREATE TABLE `claim` (
     `key`     VARCHAR(250) NOT NULL,
     `value`   TEXT DEFAULT NULL,
 
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 --

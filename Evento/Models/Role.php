@@ -13,7 +13,6 @@ class Role
 
     const NAME = [
         self::ADMIN => 'admin',
-        self::EDITOR => 'editor',
         self::MEMBER => 'member'
     ];
 }

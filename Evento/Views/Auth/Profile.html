@@ -11,24 +11,24 @@
             <legend>Update profile</legend>
 
             <label>E-mail</label>
-            <input type="text" placeholder="E-mail" value="{{ user.email }}" disabled>
+            <input type="text" value="{{ user.username }}" disabled>
             
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username" value="{{ user.name }}">
-            {% if validator.username %}
-                <div class="error-block">{{ validator.username }}</div>
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email ?? user.email }}">
+            {% if errors.email %}
+                <div class="error-block">{{ errors.email }}</div>
             {% endif %}
             
             <label for="password">New password</label>
             <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
-            {% if validator.password %}
-                <div class="error-block">{{ validator.password }}</div>
+            {% if errors.password %}
+                <div class="error-block">{{ errors.password }}</div>
             {% endif %}
 
             <label for="password_confirmation">Confirm new password</label>
             <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password" value="{{ params.password_confirmation }}">
-            {% if validator.password_confirmation %}
-                <div class="error-block">{{ validator.password_confirmation }}</div>
+            {% if errors.password_confirmation %}
+                <div class="error-block">{{ errors.password_confirmation }}</div>
             {% endif %}
 
             {{user|json_encode}}

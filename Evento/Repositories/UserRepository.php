@@ -169,7 +169,7 @@ class UserRepository extends AbstractRepository
             $statement->bindValue(3, $password);
 
             $statement->execute();
-        } catch (PDOException $exeption) {
+        } catch (PDOException $exception) {
             return new Result(null, Result::ERROR);
         }
 

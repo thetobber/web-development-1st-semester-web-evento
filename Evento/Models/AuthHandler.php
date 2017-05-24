@@ -16,27 +16,25 @@ class AuthHandler
      * Removes data about the user from the current session 
      * to sign out.
      */
-    public function performSignOut()
+    public function unsetUserSession()
     {
         //Unset the user array of data
         unset($_SESSION['user']);
     }
 
-    public function unsetUserSession()
-    {
-        unset($_SESSION['user']);
-    }
-
     public function setUserSession(array $user)
     {
-        unset($user['password']);
-        $user[Role::NAME[$user['role']]] = true;
-        $_SESSION['user'] = $user;
+        $_SESSION['user'] = [
+            'username' => $user['username'],
+            'email' => $user['email'],
+            'role' => $user['role'],
+            Role::NAME[$user['role']] => true,
+        ];
     }
 
-    public function verifyPassword($password, $hash)
+    public function setUserSessionKey($key, $value)
     {
-        return password_verify($password, $hash);
+        $_SESSION['user'][$key] = $value;
     }
 
     public function isVerified()
@@ -45,19 +43,11 @@ class AuthHandler
     }
 
     /**
-     * Checks if the user has one of the roles supplied after 
+     * Checks if the user has one of the roles supplied after
      * verifying that the user is already signed in.
      */
-    public function hasRole(...$roles)
+    public function hasRole($role)
     {
-        if ($this->isVerified()) {
-            foreach ($role as $roles) {
-                if (isset($_SESSION['user'][$role])) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return isset($_SESSION['user'][$role]) || isset($_SESSION['user']) && $_SESSION['user']['role'] === Role::ADMIN;
     }
 }

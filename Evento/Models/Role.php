@@ -8,8 +8,7 @@ class Role
     }
 
     const ADMIN = 1;
-    const EDITOR = 2;
-    const MEMBER = 3;
+    const MEMBER = 2;
 
     const NAME = [
         self::ADMIN => 'admin',

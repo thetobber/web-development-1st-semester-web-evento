@@ -16,12 +16,17 @@
 
         {% if user %}
             <a href="{{ path_for('Auth.Profile') }}">Profile</a>
+            {% if user.admin %}
+                <a href="{{ path_for('Event.Create') }}">Create event</a>
+            {% endif %}
             <a href="{{ path_for('Auth.SignOut') }}">Sign Out</a>
             <div class="align-right">Signed in as {{ user.username | capitalize }}</div>
         {% else %}
             <a href="{{ path_for('Auth.SignIn') }}">Sign in</a>
             <a href="{{ path_for('Auth.SignUp') }}">Sign up</a>
         {% endif %}
+
+
     </nav>
 
     <main class="container">

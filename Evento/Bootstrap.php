@@ -80,35 +80,40 @@ $container['eventCtrl'] = function ($c) {
 
 $app->add(new GeneralMiddleware($container));
 
-//Group only accessible when NOT signed in
-$app->group('', function () {
-    $this->get('/signin', 'authCtrl:getSignIn')
-        ->setName('Auth.SignIn');
+// Auth routes
 
-    $this->post('/signin', 'authCtrl:postSignIn');
+$app->get('/signin', 'authCtrl:getSignIn')
+    ->setName('Auth.SignIn');
 
-    $this->get('/signup', 'authCtrl:getSignUp')
-        ->setName('Auth.SignUp');
+$app->post('/signin', 'authCtrl:postSignIn');
 
-    $this->post('/signup', 'authCtrl:postSignUp');
-})
-->add(new GuestMiddleware($container));
+$app->get('/signup', 'authCtrl:getSignUp')
+    ->setName('Auth.SignUp');
 
-//Group which is ONLY accessible when signed in
-$app->group('', function () {
-    $this->get('/signout', 'authCtrl:getSignOut')
-        ->setName('Auth.SignOut');
+$app->post('/signup', 'authCtrl:postSignUp');
 
-    $this->get('/profile', 'authCtrl:getProfile')
-        ->setName('Auth.Profile');
+$app->get('/signout', 'authCtrl:getSignOut')
+    ->setName('Auth.SignOut');
 
-    $this->post('/profile', 'authCtrl:postProfile');
-})
-->add(new AuthMiddleware($container));
+$app->get('/profile', 'authCtrl:getProfile')
+    ->setName('Auth.Profile');
 
-// Main routes
-$app->get('/event/create', 'eventCtrl:getCreate')
+$app->post('/profile', 'authCtrl:postProfile');
+
+// Event routes
+$app->get('/events/create', 'eventCtrl:getCreate')
     ->setName('Event.Create');
+
+/*$app->get('/events/update', 'eventCtrl:getUpdate')
+    ->setName('Events.Create');
+
+$app->get('/events/[]', 'eventCtrl:getList')
+    ->setName('Events.List');
+
+$app->get('/events/single/{id:[0-9]+}', 'eventCtrl:getSingle')
+    ->setName('Events.Single');*/
+
+
 
 // Main routes
 $app->get('/', 'mainCtrl:getIndex')

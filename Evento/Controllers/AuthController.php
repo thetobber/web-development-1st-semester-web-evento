@@ -25,25 +25,27 @@ class AuthController extends AbstractController
 
     /**
      * Return sign in view on GET request.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
      */
     public function getSignIn($request, $response)
     {
+        //If is signed in
+        if ($this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         return $this->view($response, 'Auth/SignIn.html');
     }
 
     /**
      * Attempt to sign in user.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
      */
     public function postSignIn($request, $response)
     {
+        //If is signed in
+        if ($this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         $params = $request->getParams();
         $errors = [];
 
@@ -76,25 +78,27 @@ class AuthController extends AbstractController
 
     /**
      * Return sign up view on GET request.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
      */
     public function getSignUp($request, $response)
     {
+        //If is signed in
+        if ($this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         return $this->view($response, 'Auth/SignUp.html');
     }
 
     /**
      * Attempt to sign up and create a new user on POST request.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
      */
     public function postSignUp($request, $response)
     {
+        //If is signed in
+        if ($this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.Profile');
+        }
+
         $params = $request->getParams();
 
         $result = $this->repository->create($params);
@@ -116,6 +120,11 @@ class AuthController extends AbstractController
      */
     public function getSignOut($request, $response)
     {
+        //If not signed in
+        if (!$this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
         //Unset the user array of data
         $this->authHandler->unsetUserSession();
         return $this->redirect($response, 'Main');
@@ -126,6 +135,11 @@ class AuthController extends AbstractController
      */
     public function getProfile($request, $response)
     {
+        //If not signed in
+        if (!$this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
         return $this->view($response, 'Auth/Profile.html');
     }
 
@@ -134,31 +148,25 @@ class AuthController extends AbstractController
      */
     public function postProfile($request, $response)
     {
-        $params = $request->getParams();
-        $params['email'] = $_SESSION['user']['email'];
-
-        $data = ['params' => $params];
-
-        try {
-            Validator::updateUser($params);
-        } catch (NestedValidationException $e) {
-            $data['validator'] = $e->findMessages(Validator::ERRORS['updateUser']);
-
-            return $this->view($response, 'Auth/Profile.html', $data);
+        //If not signed in
+        if (!$this->authHandler->isVerified()) {
+            return $this->redirect($response, 'Auth.SignIn');
         }
+
+        $params = $request->getParams();
+        $params['username'] = $_SESSION['user']['username'];
 
         $result = $this->repository->update($params);
 
-        if ($result === null) {
-            $_SESSION['user']['name'] = $params['username'];
+        if ($result->hasSuccess()) {
+            $this->authHandler->setUserSessionKey('email', $params['email']);
             return $this->redirect($response, 'Auth.Profile');
         }
 
-        if ($result instanceof PDOException) {
-            $data['database'] = $result->getMessage();
-        }
-
-        return $this->view($response, 'Auth/Profile.html', $data);
+        return $this->view($response, 'Auth/Profile.html', [
+            'params' => $params,
+            'errors' => $result->getErrorMessages()
+        ]);
     }
 }
 

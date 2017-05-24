@@ -6,52 +6,94 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Main</h2>
-    
+    <form action="{{ path_for('Auth.SignUp') }}" method="POST">
+        <fieldset>
+            <legend>Address</legend>
 
-    <div>
-        <input type="text" name="timezone" list="timezone" pattern="[0-9]{4}">
+            <label for="address1">Address line 1</label>
+            <input id="address1" name="address1" type="text" placeholder="Address line 1" value="{{ params.address1 }}">
+            {% if errors.address1 %}
+                <div class="error-block">{{ errors.address1 }}</div>
+            {% endif %}
 
-        <datalist id="timezone" style="max-height: 200px; overflow-y: auto;">
-            <option value="-12:00">-12:00</option>
-            <option value="-11:00">-11:00</option>
-            <option value="-10:00">-10:00</option>
-            <option value="-09:30">-09:30</option>
-            <option value="-09:00">-09:00</option>
-            <option value="-08:00">-08:00</option>
-            <option value="-07:00">-07:00</option>
-            <option value="-06:00">-06:00</option>
-            <option value="-05:00">-05:00</option>
-            <option value="-04:00">-04:00</option>
-            <option value="-03:30">-03:30</option>
-            <option value="-03:00">-03:00</option>
-            <option value="-02:00">-02:00</option>
-            <option value="-01:00">-01:00</option>
-            <option value="-00:00">-00:00</option>
-            <option value="+01:00">+01:00</option>
-            <option value="+02:00">+02:00</option>
-            <option value="+03:00">+03:00</option>
-            <option value="+03:30">+03:30</option>
-            <option value="+04:00">+04:00</option>
-            <option value="+04:30">+04:30</option>
-            <option value="+05:00">+05:00</option>
-            <option value="+05:30">+05:30</option>
-            <option value="+05:45">+05:45</option>
-            <option value="+06:00">+06:00</option>
-            <option value="+06:30">+06:30</option>
-            <option value="+07:00">+07:00</option>
-            <option value="+08:00">+08:00</option>
-            <option value="+08:30">+08:30</option>
-            <option value="+08:45">+08:45</option>
-            <option value="+09:00">+09:00</option>
-            <option value="+09:30">+09:30</option>
-            <option value="+10:00">+10:00</option>
-            <option value="+10:30">+10:30</option>
-            <option value="+11:00">+11:00</option>
-            <option value="+12:00">+12:00</option>
-            <option value="+12:45">+12:45</option>
-            <option value="+13:00">+13:00</option>
-            <option value="+14:00">+14:00</option>
-        </datalist>
-    </div>
+            <label for="address2">Address line 2</label>
+            <input id="address2" name="address2" type="text" placeholder="Address line 2" value="{{ params.address2 }}">
+            {% if errors.address2 %}
+                <div class="error-block">{{ errors.address2 }}</div>
+            {% endif %}
+
+            <label for="district">District</label>
+            <input id="district" name="district" type="text" placeholder="Address line 2" value="{{ params.district }}">
+            {% if errors.district %}
+                <div class="error-block">{{ errors.district }}</div>
+            {% endif %}
+
+            <label for="city">City</label>
+            <input id="city" name="city" type="text" placeholder="City" value="{{ params.city }}">
+            {% if errors.city %}
+                <div class="error-block">{{ errors.city }}</div>
+            {% endif %}
+
+            <label for="postal_code">Postal code</label>
+            <input id="postal_code" name="postal_code" type="text" placeholder="Postal code" value="{{ params.postal_code }}">
+            {% if errors.postal_code %}
+                <div class="error-block">{{ errors.postal_code }}</div>
+            {% endif %}
+
+            <label for="city">City</label>
+            <select name="city">
+                <option value="" disabled selected>Choose city</option>
+                {% for city in cities %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="country">Country</label>
+            <select name="country">
+                <option value="" disabled selected>Choose country</option>
+                {% for country in countries %}
+                    <option value="{{ country.id }}">{{ country.name }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+
+        <fieldset>
+            <legend>Event information</legend>
+
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" placeholder="Title" value="{{ params.title }}">
+            {% if errors.title %}
+                <div class="error-block">{{ errors.title }}</div>
+            {% endif %}
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Description">{{ params.description }}</textarea>
+            {% if errors.description %}
+                <div class="error-block">{{ errors.description }}</div>
+            {% endif %}
+
+            <label for="category">Category</label>
+            <select name="category">
+                <option value="" disabled selected>Choose category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="start">Start date</label>
+            <input id="start" name="start" type="datetime-local" placeholder="Start date" value="{{ params.start }}">
+            {% if errors.start %}
+                <div class="error-block">{{ errors.start }}</div>
+            {% endif %}
+
+            <label for="end">End date</label>
+            <input id="end" name="end" type="datetime-local" placeholder="End date" value="{{ params.end }}">
+            {% if errors.end %}
+                <div class="error-block">{{ errors.end }}</div>
+            {% endif %}
+
+        </fieldset>
+
+        <button type="submit">Create event</button>
+    </form>
 {% endblock %}

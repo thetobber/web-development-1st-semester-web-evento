@@ -195,4 +195,24 @@ class EventRepository extends AbstractRepository
 
         return new Result(null, Result::ERROR);
     }
+
+    public function participate($user_id, $event_id)
+    {
+        try {
+            $statement = $this->handle->prepare('INSERT INTO `participant` (`user_id`, `event_id`) VALUES (?, ?)');
+
+            $statement->bindValue(1, $user_id, PDO::PARAM_INT);
+            $statement->bindValue(2, $event_id, PDO::PARAM_INT);
+
+            $statement->execute();
+            $statement->closeCursor();
+
+            return new Result(null, Result::SUCCESS);
+        } catch (PDOException $exception) {
+            var_dump($exception);
+            die();
+        }
+
+        return new Result(null, Result::ERROR);
+    }
 }

@@ -8,4 +8,8 @@
 {% block body %}
     <h2>Single event</h2>
     <a href="{{ path_for('Event.Update', {'id': params.event_id}) }}">{{ params.title }}</a>
+
+    <form action="{{ path_for('Event.Participate', {'id': params.event_id}) }}" method="POST">
+        <button type="submit">Participate in {{ params.title }}</button>
+    </form>
 {% endblock %}

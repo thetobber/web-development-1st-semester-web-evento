@@ -97,8 +97,6 @@ BEGIN
 
     INSERT INTO `event` (`category_id`, `address_id`, `title`, `description`, `start`, `end`) VALUES
         (categoryId, addressId, inTitle, inDescription, inStart, inEnd);
-
-    SELECT * FROM `event` WHERE `id` = LAST_INSERT_ID();
 END//
 
 --
@@ -139,7 +137,7 @@ BEGIN
         `end` = inEnd
     WHERE `id` = inEventId;
 
-    SELECT * FROM `event_view` WHERE `id` = inEventId;
+    SELECT * FROM `event_view` WHERE `event_id` = inEventId;
 END//
 
 CREATE DEFINER = 'evento'@'localhost' PROCEDURE deleteEvent
@@ -155,6 +153,8 @@ BEGIN
     DELETE FROM `address` WHERE `id` = addressId;
 END//
 
+
+DELIMITER ;
 /*
 set @countryId := (select `id` from `country` where `code` = 'DK');
 set @cityId := (select `id` from `city` where `name` = 'Hvidovre' and `country_id` = @countryId);

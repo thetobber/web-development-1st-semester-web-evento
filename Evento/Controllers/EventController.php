@@ -55,9 +55,13 @@ class EventController extends AbstractController
         $cityRepo = new CityRepository();
         $cities = $cityRepo->readAll();
 
-        return $this->view($response, 'Event/Create.html', [
-            'cities' => $cities->getContent()
-        ]);
+        if ($cities->hasContent()) {
+            return $this->view($response, 'Event/Create.html', [
+                'cities' => $cities->getContent()
+            ]);
+        }
+
+        return $this->view($response, 'Static/500.html');
     }
 
     public function postCreate($request, $response)
@@ -70,14 +74,23 @@ class EventController extends AbstractController
 
         $event = $this->repository->create($params);
 
+        if ($event->hasSuccess()) {
+            return $this->redirect($response, 'Event.List');
+        }
+
+
         $cityRepo = new CityRepository();
         $cities = $cityRepo->readAll();
+        
+        if ($cities->hasContent()) {
+            return $this->view($response, 'Event/Create.html', [
+                'params' => $params,
+                'errors' => $event->getErrorMessages(),
+                'cities' => $cities->getContent()
+            ]);
+        }
 
-        return $this->view($response, 'Event/Create.html', [
-            'params' => $params,
-            'errors' => $event->getErrorMessages(),
-            'cities' => $cities->getContent()
-        ]);
+        return $this->view($response, 'Static/500.html');
     }
 
     public function getUpdate($request, $response, $args)
@@ -140,5 +153,16 @@ class EventController extends AbstractController
         }
 
         return $this->redirect($response, 'Event.Update', ['id' => $params['event_id']]);
+    }
+
+    public function postParticipate($request, $response, $args)
+    {
+        if (!$this->authHandler->isVerified()) {
+            return $this-redirect($response, 'Auth.SingIn');
+        }
+
+        $result = $this->repository->participate($_SESSION['user']['id'], $args['id']);
+
+        return $this->redirect($response, 'Event.Single', ['id' => $args['id']]);
     }
 }

@@ -126,7 +126,8 @@ $app->post('/event/update/{id:[0-9]+}', 'eventCtrl:postUpdate');
 $app->post('/event/delete/{id:[0-9]+}', 'eventCtrl:postDelete')
     ->setName('Event.Delete');
 
-
+$app->post('/event/participate/{id:[0-9]+}', 'eventCtrl:postParticipate')
+    ->setName('Event.Participate');
 
 // Main routes
 $app->get('/', 'mainCtrl:getIndex')

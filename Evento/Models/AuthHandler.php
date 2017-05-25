@@ -25,6 +25,7 @@ class AuthHandler
     public function setUserSession(array $user)
     {
         $_SESSION['user'] = [
+            'id' => $user['id'],
             'username' => $user['username'],
             'email' => $user['email'],
             'role' => $user['role'],

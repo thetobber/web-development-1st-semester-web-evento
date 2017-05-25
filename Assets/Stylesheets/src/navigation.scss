@@ -1,0 +1,33 @@
+@import "variables.scss";
+
+#navigation ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0 auto;
+}
+
+#navigation li a:not(.mono) {
+    display: block;
+    text-decoration: none;
+    padding: $gutter 2*$gutter;
+    font-weight: bold;
+
+    &:hover,
+    &:focus,
+    &:active {
+        text-decoration: none;
+    }
+}
+
+.teal #navigation li a:not(.mono) {
+    color: $contraTeal;
+}
+
+.red #navigation li a:not(.mono) {
+    color: $contraRed;
+}
+
+.green #navigation li a:not(.mono) {
+    color: $contraGreen;
+}

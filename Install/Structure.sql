@@ -157,14 +157,17 @@ CREATE VIEW `participant_view` AS
 --
 -- Event view with address and category joined
 --
-CREATE VIEW `event_view` AS 
+CREATE VIEW `event_view` AS
     SELECT  `a`.`id` `address_id`, `a`.`address1`, `a`.`address2`,
             `a`.`postal_code`, `a`.`city_id`, `e`.`id` `event_id`,
             `e`.`title`, `e`.`description`, `c`.`name` `category`,
-            `e`.`start`, `e`.`end`
+            `e`.`start`, `e`.`end`, `ci`.`name` `city`, `co`.`name` `country`
     FROM `event` AS `e`
     INNER JOIN `address` AS `a`
         ON `e`.`address_id` = `a`.`id`
     INNER JOIN `category` AS `c`
         ON `e`.`category_id` = `c`.`id`
-    WHERE `e`.`id` = 5;
+    INNER JOIN `city` AS `ci`
+        ON `a`.`city_id` = `ci`.`id`
+    INNER JOIN `country` AS `co`
+        ON `ci`.`country_id` = `co`.`id`;

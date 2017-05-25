@@ -4,40 +4,56 @@
 <head>
     {% block head %}
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="{{ base_url() }}/Assets/bootstrap-reboot.css" media="all">
-        <link rel="stylesheet" href="{{ base_url() }}/Assets/bootstrap-grid.css" media="all">
-        <link rel="stylesheet" href="{{ base_url() }}/Assets/defaults.css" media="all">
+        <link rel="stylesheet" href="{{ base_url() }}/Assets/Stylesheets/style.css" media="all">
     {% endblock %}
 </head>
 
 <body>
-    <nav class="container">
-        <a href="{{ path_for('Main') }}">Home</a>
+    <header id="header" class="{% block bannerStyle %}teal{% endblock %}">
+        <nav id="navigation">
+            <ul class="container">
+                <li class="mr-auto-small"><a class=" mono" href="/">EVENTO</a></li>
+                <li><a href="{{ path_for('Main') }}">Home</a></li>
+                <li><a href="{{ path_for('Event.List') }}">Events</a></li>
+                {% if user %}
+                    <li><a href="{{ path_for('Auth.Profile') }}">Profile</a></li>
+                    <li><a href="{{ path_for('Auth.SignOut') }}">Sign Out</a></li>
+                {% else %}
+                    <li><a href="{{ path_for('Auth.SignIn') }}">Sign in</a></li>
+                    <li><a href="{{ path_for('Auth.SignUp') }}">Sign up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
 
-        {% if user %}
-            <a href="{{ path_for('Auth.Profile') }}">Profile</a>
-            {% if user.admin %}
-                <a href="{{ path_for('Event.Create') }}">Create event</a>
-            {% endif %}
-            <a href="{{ path_for('Auth.SignOut') }}">Sign Out</a>
-            <div class="align-right">Signed in as {{ user.username | capitalize }}</div>
-        {% else %}
-            <a href="{{ path_for('Auth.SignIn') }}">Sign in</a>
-            <a href="{{ path_for('Auth.SignUp') }}">Sign up</a>
-        {% endif %}
+        <section id="banner">
+            <div class="container">
+                <div class="slide-in center-block max-500">
+                    {% block bannerContent %}{% endblock %}
+                </div>
+            </div>
+        </section>
+    </header>
 
-
-    </nav>
-
-    <main class="container">
-        <div class="card">
+    <main id="main">
+        <div class="container">
             {% block body %}{% endblock %}
         </div>
     </main>
 
-
-    <script type="text/javascript" src="{{ base_url() }}/Assets/http.js"></script>
-    {% block footer %}{% endblock %}
+    {% block footer %}
+        <footer id="footer">
+            <section class="container">
+                <div class="text-center-small">
+                    <div>
+                        <a class="mono" href="/">EVENTO</a>
+                    </div>
+                    <div>
+                        <b>2017</b>
+                    </div>
+                </div>
+            </section>
+        </footer>
+    {% endblock %}
 </body>
 
 </html>

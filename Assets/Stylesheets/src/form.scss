@@ -9,6 +9,7 @@ select {
     outline: 0 none;
     border: 2px solid $textColor;
     font-weight: bold;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
 
     &:focus {
         outline: 0 none;
@@ -23,6 +24,16 @@ select {
     &:focus::placeholder {
         color: $white;
     }
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+input[disabled] {
+    opacity: 0.5;
+    background-color: $borderColor;
 }
 
 select {
@@ -48,6 +59,11 @@ button {
     @media (min-width: $breakpoint1) {
         max-width: 145px;
     }
+}
+
+.error-block {
+    color: $red;
+    font-weight: bold;
 }
 
 %button-teal {
@@ -90,6 +106,7 @@ button {
     text-decoration: none;
     cursor: pointer;
     font-weight: bold;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
 
     &:hover,
     &:focus {

@@ -12,10 +12,12 @@ const scriptDir = 'Assets/Scripts';
 //string|string[] of path(s) to file(s)
 const stylesheets = [
     styleDir + '/src/variables.scss',
+    styleDir + '/src/animations.scss',
     styleDir + '/src/normalize.scss',
     styleDir + '/src/typography.scss',
     styleDir + '/src/grid.scss',
     styleDir + '/src/general.scss',
+    styleDir + '/src/navigation.scss',
     styleDir + '/src/form.scss',
     styleDir + '/src/pane.scss'
 ];

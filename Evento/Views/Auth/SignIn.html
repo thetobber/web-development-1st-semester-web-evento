@@ -5,22 +5,29 @@
     <title>Evento - Sign in</title>
 {% endblock %}
 
+{% block bannerStyle %}green{% endblock %}
+
+{% block bannerContent %}
+    <h1 class="text-center-small nomargin-small h1-big">Events</h1>
+{% endblock %}
+
 {% block body %}
     <form action="{{ path_for('Auth.SignIn') }}" method="POST">
-        <fieldset>
-            <legend>Sign in</legend>
+        <div class="row">
+            <div class="col-small-12 space-small">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" placeholder="Username" value="{{ params.username }}">
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
+            </div>
+        </div>
 
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username" value="{{ params.username }}">
-            
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
+        {% if errors.credentials %}
+            <div class="error-block space-small">{{ errors.credentials }}</div>
+        {% endif %}
 
-            {% if errors.credentials %}
-                <div class="error-block">{{ errors.credentials }}</div>
-            {% endif %}
-
-            <button type="submit">Sign in</button>
-        </fieldset>
+        <button class="button" type="submit">Sign in</button>
     </form>
 {% endblock %}

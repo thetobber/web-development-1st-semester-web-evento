@@ -1,0 +1,18 @@
+@import "variables";
+
+.slide-in {
+    animation: slide-in 1.5s forwards;
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+@keyframes slide-in {
+    50% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

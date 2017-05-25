@@ -2,7 +2,13 @@
 
 {% block head %}
     {{ parent() }}
-    <title>Evento -</title>
+    <title>Evento - {{ params.title }}</title>
+{% endblock %}
+
+{% block bannerStyle %}red{% endblock %}
+
+{% block bannerContent %}
+    <h1 class="text-center-small nomargin-small h1-big">{{ params.title }}</h1>
 {% endblock %}
 
 {% block body %}

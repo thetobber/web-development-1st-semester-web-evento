@@ -2,38 +2,45 @@
 
 {% block head %}
     {{ parent() }}
-    <title>Evento - {{ user.name | capitalize }}</title>
+    <title>Evento - {{ user.username | capitalize }}</title>
+{% endblock %}
+
+{% block bannerStyle %}green{% endblock %}
+
+{% block bannerContent %}
+    <h1 class="text-center-small nomargin-small h1-big">Hey {{ user.username }}!</h1>
 {% endblock %}
 
 {% block body %}
     <form action="{{ path_for('Auth.Profile') }}" method="POST">
-        <fieldset>
-            <legend>Update profile</legend>
+        <div class="row">
+            <div class="col-small-12 space-small">
+                <label for="username">E-mail</label>
+                <input id="username" type="text" value="{{ user.username }}" disabled>
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email ?? user.email }}">
+                {% if errors.email %}
+                    <div class="error-block">{{ errors.email }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="password">New password</label>
+                <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
+                {% if errors.password %}
+                    <div class="error-block">{{ errors.password }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="password_confirmation">Confirm new password</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password" value="{{ params.password_confirmation }}">
+                {% if errors.password_confirmation %}
+                    <div class="error-block">{{ errors.password_confirmation }}</div>
+                {% endif %}
+            </div>
+        </div>
 
-            <label>E-mail</label>
-            <input type="text" value="{{ user.username }}" disabled>
-            
-            <label for="email">E-mail</label>
-            <input id="email" name="email" type="text" placeholder="E-mail" value="{{ params.email ?? user.email }}">
-            {% if errors.email %}
-                <div class="error-block">{{ errors.email }}</div>
-            {% endif %}
-            
-            <label for="password">New password</label>
-            <input id="password" name="password" type="password" placeholder="Password" value="{{ params.password }}">
-            {% if errors.password %}
-                <div class="error-block">{{ errors.password }}</div>
-            {% endif %}
-
-            <label for="password_confirmation">Confirm new password</label>
-            <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm password" value="{{ params.password_confirmation }}">
-            {% if errors.password_confirmation %}
-                <div class="error-block">{{ errors.password_confirmation }}</div>
-            {% endif %}
-
-            {{user|json_encode}}
-
-            <button type="submit">Update</button>
-        </fieldset>
+        <button class="button" type="submit">Update</button>
     </form>
 {% endblock %}

@@ -140,6 +140,22 @@
         padding-bottom: 0 !important;
     }
 
+    .mt-auto-#{$name} {
+        margin-top: auto;
+    }
+
+    .mr-auto-#{$name} {
+        margin-right: auto;
+    }
+
+    .mb-auto-#{$name} {
+        margin-bottom: auto;
+    }
+
+    .ml-auto-#{$name} {
+        margin-left: auto;
+    }
+
     .margin-#{$name} {
         margin-bottom: 2 * $gutter !important;
     }

@@ -5,6 +5,12 @@
     <title>Evento - Create event</title>
 {% endblock %}
 
+{% block bannerStyle %}red{% endblock %}
+
+{% block bannerContent %}
+    <h1 class="text-center-small nomargin-small h1-big">Create new event</h1>
+{% endblock %}
+
 {% block body %}
     <form action="{{ path_for('Event.Create') }}" method="POST">
         <fieldset>

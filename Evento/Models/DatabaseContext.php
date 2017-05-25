@@ -3,6 +3,7 @@ namespace Evento\Models;
 
 use PDO;
 use PDOException;
+use Evento\Config;
 
 /**
  * Represents a singlton which handles the connection between 
@@ -30,16 +31,19 @@ class DatabaseContext
      */
     public static function getInstance()
     {
-        //PDO::MYSQL_ATTR_INIT_COMMAND
-
         if (static::$pdo === null) {
             try {
                 static::$pdo = new PDO(
-                    'mysql:host=localhost;dbname=evento;charset=utf8',
-                    'evento',
-                    'nhQrQQzf7C6mTybsm47Hy4ae',
+                    sprintf(
+                        'mysql:host=%s;dbname=%s;charset=%s',
+                        Config::DB_HOST,
+                        Config::DB_NAME,
+                        Config::DB_CHARSET
+                    ),
+                    Config::DB_USER,
+                    Config::DB_PASS,
                     [
-                        PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = 'Europe/Copenhagen';",
+                        PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '".Config::TIMEZONE."';",
                         PDO::ATTR_PERSISTENT => true,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -47,16 +51,8 @@ class DatabaseContext
                     ]
                 );
             } catch (PDOException $exception) {
-                /*
-                Implement something which does not make the 
-                application die here.
-                */
-
-                //return $exception;
-                var_dump($exception);
-
                 header('HTTP/1.1 500 Internal Server Error', true);
-                die('Could not connect to database.');
+                die('Could not connect to the database.');
             }
         }
         

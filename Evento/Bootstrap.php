@@ -8,26 +8,10 @@ ini_set('session.cookie_secure', 0);
 ini_set('session.cookie_lifetime', 0);
 
 session_start();
-date_default_timezone_set('Europe/Copenhagen');
-
-/*
-Insert timezones in MySQL database
-https://dev.mysql.com/downloads/timezones.html
-
-DATE format
-MySQL: YYYY-MM-DD
-PHP:   Y-m-d
-
-DATETIME format
-MySQL: YYYY-MM-DD HH:MM:SS
-PHP:   Y-m-d H:i:s
-
-Possible shown like this:
-d-m-Y H:i:s \U\T\C P
-*/
 
 require(__DIR__.'/../Vendor/autoload.php');
 
+use Evento\Config;
 use Slim\App;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
@@ -38,6 +22,8 @@ use Evento\Middleware\AuthMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
 use Evento\Controllers\EventController;
+
+date_default_timezone_set(Config::TIMEZONE);
 
 $app = new App([
     'settings' => [
@@ -60,8 +46,8 @@ $container['authHandler'] = function ($c) {
 
 $container['view'] = function ($c) {
     $view = new Twig(__DIR__.'/Views', [
-        'debug ' => true,
-        'cache' => false //__DIR__.'/cache'
+        'debug ' => Config::DEBUG,
+        'cache' => Config::CACHE_DIR
     ]);
 
     $view->addExtension(new TwigExtension(
@@ -88,49 +74,49 @@ $app->add(new GeneralMiddleware($container));
 
 // Auth routes
 
-$app->get('/signin', 'authCtrl:getSignIn')
+$app->get(Config::BASE_PATH.'/signin', 'authCtrl:getSignIn')
     ->setName('Auth.SignIn');
 
-$app->post('/signin', 'authCtrl:postSignIn');
+$app->post(Config::BASE_PATH.'/signin', 'authCtrl:postSignIn');
 
-$app->get('/signup', 'authCtrl:getSignUp')
+$app->get(Config::BASE_PATH.'/signup', 'authCtrl:getSignUp')
     ->setName('Auth.SignUp');
 
-$app->post('/signup', 'authCtrl:postSignUp');
+$app->post(Config::BASE_PATH.'/signup', 'authCtrl:postSignUp');
 
-$app->get('/signout', 'authCtrl:getSignOut')
+$app->get(Config::BASE_PATH.'/signout', 'authCtrl:getSignOut')
     ->setName('Auth.SignOut');
 
-$app->get('/profile', 'authCtrl:getProfile')
+$app->get(Config::BASE_PATH.'/profile', 'authCtrl:getProfile')
     ->setName('Auth.Profile');
 
-$app->post('/profile', 'authCtrl:postProfile');
+$app->post(Config::BASE_PATH.'/profile', 'authCtrl:postProfile');
 
 // Event routes
-$app->get('/event/{id:[0-9]+}', 'eventCtrl:getSingle')
+$app->get(Config::BASE_PATH.'/event/{id:[0-9]+}', 'eventCtrl:getSingle')
     ->setName('Event.Single');
 
-$app->get('/event[/p/{page:[0-9]+}]', 'eventCtrl:getList')
+$app->get(Config::BASE_PATH.'/event[/p/{page:[0-9]+}]', 'eventCtrl:getList')
     ->setName('Event.List');
 
-$app->get('/event/create', 'eventCtrl:getCreate')
+$app->get(Config::BASE_PATH.'/event/create', 'eventCtrl:getCreate')
     ->setName('Event.Create');
 
-$app->post('/event/create', 'eventCtrl:postCreate');
+$app->post(Config::BASE_PATH.'/event/create', 'eventCtrl:postCreate');
 
-$app->get('/event/update/{id:[0-9]+}', 'eventCtrl:getUpdate')
+$app->get(Config::BASE_PATH.'/event/update/{id:[0-9]+}', 'eventCtrl:getUpdate')
     ->setName('Event.Update');
 
-$app->post('/event/update/{id:[0-9]+}', 'eventCtrl:postUpdate');
+$app->post(Config::BASE_PATH.'/event/update/{id:[0-9]+}', 'eventCtrl:postUpdate');
 
-$app->post('/event/delete/{id:[0-9]+}', 'eventCtrl:postDelete')
+$app->post(Config::BASE_PATH.'/event/delete/{id:[0-9]+}', 'eventCtrl:postDelete')
     ->setName('Event.Delete');
 
-$app->post('/event/participate/{id:[0-9]+}', 'eventCtrl:postParticipate')
+$app->post(Config::BASE_PATH.'/event/participate/{id:[0-9]+}', 'eventCtrl:postParticipate')
     ->setName('Event.Participate');
 
 // Main routes
-$app->get('/', 'mainCtrl:getIndex')
+$app->get(Config::BASE_PATH.'/', 'mainCtrl:getIndex')
     ->setName('Main');
 
 $app->run();

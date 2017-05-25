@@ -1,0 +1,18 @@
+{% extends 'Shared/Layout.html' %}
+
+{% block head %}
+    {{ parent() }}
+    <title>Evento -</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Listing of events</h2>
+
+    {% for event in events %}
+        <div>
+            <a href="{{ path_for('Event.Single', {'id': event.event_id}) }}">
+                <h4>{{ event.title }}</h4>
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}

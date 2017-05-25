@@ -128,3 +128,43 @@ CREATE TABLE `event` (
     INDEX (`start`) USING BTREE,
     INDEX (`end`) USING BTREE
 );
+
+--
+-- Participant table
+--
+CREATE TABLE `participant` (
+    `id`       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id`  BIGINT UNSIGNED NOT NULL,
+    `event_id` BIGINT UNSIGNED NOT NULL,
+
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`event_id`) REFERENCES `event` (`id`),
+    UNIQUE INDEX (`user_id`, `event_id`) USING HASH
+);
+
+--
+-- Participant view with user and event joined
+--
+CREATE VIEW `participant_view` AS
+    SELECT `u`.`username`, `e`.`title`
+        FROM `participant` AS `p`
+        INNER JOIN `user` AS `u`
+            ON `p`.`user_id` = `u`.`id`
+        INNER JOIN `event` AS `e`
+            ON `p`.`event_id` = `e`.`id`;
+
+--
+-- Event view with address and category joined
+--
+CREATE VIEW `event_view` AS 
+    SELECT  `a`.`id` `address_id`, `a`.`address1`, `a`.`address2`,
+            `a`.`postal_code`, `a`.`city_id`, `e`.`id` `event_id`,
+            `e`.`title`, `e`.`description`, `c`.`name` `category`,
+            `e`.`start`, `e`.`end`
+    FROM `event` AS `e`
+    INNER JOIN `address` AS `a`
+        ON `e`.`address_id` = `a`.`id`
+    INNER JOIN `category` AS `c`
+        ON `e`.`category_id` = `c`.`id`
+    WHERE `e`.`id` = 5;

@@ -17,10 +17,10 @@ abstract class AbstractController
         $this->container = $container;
     }
 
-    protected function redirect($response, $path)
+    protected function redirect($response, $path, $params = [])
     {
         return $response->withRedirect(
-            $this->router->pathFor($path)
+            $this->router->pathFor($path, $params)
         );
     }
 

@@ -76,29 +76,70 @@ CREATE DEFINER = 'evento'@'localhost' PROCEDURE createEvent
 (
     IN inAddress1    VARCHAR(60),
     IN inAddress2    VARCHAR(60),
-    IN inDistrict    VARCHAR(20),
     IN inCityId      MEDIUMINT UNSIGNED,
     IN inPostalCode  VARCHAR(10),
-    IN inCategoryId  SMALLINT UNSIGNED,
+    IN inCategory    VARCHAR(80),
     IN inTitle       VARCHAR(250),
     IN inDescription TEXT,
     IN inStart       DATETIME,
     in inEnd         DATETIME
 )
 BEGIN
-    DECLARE lastId BIGINT UNSIGNED;
+    DECLARE addressId BIGINT UNSIGNED;
+    DECLARE categoryId BIGINT UNSIGNED;
 
-    INSERT INTO `address` (`address1`, `address2`, `district`, `city_id`, `postal_code`) VALUES
-        (inAddress1, inAddress2, inDistrict, inCityId, inPostalCode);
+    INSERT INTO `address` (`address1`, `address2`, `city_id`, `postal_code`) VALUES
+        (inAddress1, inAddress2, inCityId, inPostalCode);
+    SET addressId = LAST_INSERT_ID();
 
-    SET lastId = LAST_INSERT_ID();
+    INSERT IGNORE `category` (`name`) VALUES (inCategory);
+    SELECT `id` INTO categoryId FROM `category` WHERE `name` = inCategory;
 
     INSERT INTO `event` (`category_id`, `address_id`, `title`, `description`, `start`, `end`) VALUES
-        (inCategoryId, lastId, inTitle, inDescription, inStart, inEnd);
+        (categoryId, addressId, inTitle, inDescription, inStart, inEnd);
 
-    SET lastId = LAST_INSERT_ID();
+    SELECT * FROM `event` WHERE `id` = LAST_INSERT_ID();
+END//
 
-    SELECT * FROM `event` WHERE `id` = lastId;
+--
+-- Update event procedure
+--
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE updateEvent
+(
+    IN inEventId     BIGINT UNSIGNED,
+    IN inAddressId   BIGINT UNSIGNED,
+    IN inAddress1    VARCHAR(60),
+    IN inAddress2    VARCHAR(60),
+    IN inCityId      MEDIUMINT UNSIGNED,
+    IN inPostalCode  VARCHAR(10),
+    IN inCategory    VARCHAR(80),
+    IN inTitle       VARCHAR(250),
+    IN inDescription TEXT,
+    IN inStart       DATETIME,
+    in inEnd         DATETIME
+)
+BEGIN
+    DECLARE categoryId BIGINT UNSIGNED;
+
+    UPDATE `address` SET
+        `address1` = inAddress1,
+        `address2` = inAddress2,
+        `city_id` = inCityId,
+        `postal_code` = inPostalCode
+    WHERE `id` = inAddressId;
+
+    INSERT IGNORE `category` (`name`) VALUES (inCategory);
+    SELECT `id` INTO categoryId FROM `category` WHERE `name` = inCategory;
+
+    UPDATE `event` SET
+        `category_id` = categoryId,
+        `title` = inTitle,
+        `description` = inDescription,
+        `start` = inStart,
+        `end` = inEnd
+    WHERE `id` = inEventId;
+
+    SELECT * FROM `event_view` WHERE `id` = inEventId;
 END//
 
 DELIMITER ;

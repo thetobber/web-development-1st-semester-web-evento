@@ -25,7 +25,7 @@ class RepositoryResult
 
     public function hasContent()
     {
-        return $this->code === self::SUCCESS && $this->result !== null;
+        return $this->code === self::SUCCESS && !empty($this->result);
     }
 
     public function hasSuccess()

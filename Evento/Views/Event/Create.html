@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path_for('Auth.SignUp') }}" method="POST">
+    <form action="{{ path_for('Event.Create') }}" method="POST">
         <fieldset>
             <legend>Address</legend>
 
@@ -22,39 +22,24 @@
                 <div class="error-block">{{ errors.address2 }}</div>
             {% endif %}
 
-            <label for="district">District</label>
-            <input id="district" name="district" type="text" placeholder="Address line 2" value="{{ params.district }}">
-            {% if errors.district %}
-                <div class="error-block">{{ errors.district }}</div>
-            {% endif %}
-
-            <label for="city">City</label>
-            <input id="city" name="city" type="text" placeholder="City" value="{{ params.city }}">
-            {% if errors.city %}
-                <div class="error-block">{{ errors.city }}</div>
-            {% endif %}
-
             <label for="postal_code">Postal code</label>
             <input id="postal_code" name="postal_code" type="text" placeholder="Postal code" value="{{ params.postal_code }}">
             {% if errors.postal_code %}
                 <div class="error-block">{{ errors.postal_code }}</div>
             {% endif %}
 
-            <label for="city">City</label>
-            <select name="city">
-                <option value="" disabled selected>Choose city</option>
+            <label for="city_id">City</label>
+            <select id="city_id" name="city_id">
                 {% for city in cities %}
-                    <option value="{{ city.id }}">{{ city.name }}</option>
+                    <option value="{{ city.id }}" {{ city.id == params.city_id ? 'selected' : '' }}>{{ city.name }}</option>
                 {% endfor %}
             </select>
+            {% if errors.city_id %}
+                <div class="error-block">{{ errors.city_id }}</div>
+            {% endif %}
 
             <label for="country">Country</label>
-            <select name="country">
-                <option value="" disabled selected>Choose country</option>
-                {% for country in countries %}
-                    <option value="{{ country.id }}">{{ country.name }}</option>
-                {% endfor %}
-            </select>
+            <input id="country" type="text" value="Denmark" disabled>
         </fieldset>
 
         <fieldset>
@@ -72,22 +57,21 @@
                 <div class="error-block">{{ errors.description }}</div>
             {% endif %}
 
+
             <label for="category">Category</label>
-            <select name="category">
-                <option value="" disabled selected>Choose category</option>
-                {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-            </select>
+            <input id="category" name="category" type="text" placeholder="Category" value="{{ params.category }}">
+            {% if errors.category %}
+                <div class="error-block">{{ errors.category }}</div>
+            {% endif %}
 
             <label for="start">Start date</label>
-            <input id="start" name="start" type="datetime-local" placeholder="Start date" value="{{ params.start }}">
+            <input id="start" name="start" type="text" placeholder="Start date" value="{{ params.start ?? 'now' | date('Y-m-d H:i:s') }}">
             {% if errors.start %}
                 <div class="error-block">{{ errors.start }}</div>
             {% endif %}
 
             <label for="end">End date</label>
-            <input id="end" name="end" type="datetime-local" placeholder="End date" value="{{ params.end }}">
+            <input id="end" name="end" type="text" placeholder="End date" value="{{ params.end ?? 'now' | date('Y-m-d H:i:s') }}">
             {% if errors.end %}
                 <div class="error-block">{{ errors.end }}</div>
             {% endif %}

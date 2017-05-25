@@ -47,7 +47,6 @@ class AuthController extends AbstractController
         }
 
         $params = $request->getParams();
-        $errors = [];
 
         $result = $this->repository->read($params);
 

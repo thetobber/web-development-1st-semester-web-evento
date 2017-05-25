@@ -48,6 +48,12 @@ $app = new App([
 
 $container = $app->getContainer();
 
+$container['notFoundHandler'] = function ($container) {
+    return function ($request, $response) use ($container) {
+        return $container->view->render($response, 'Static/404.html');
+    };
+};
+
 $container['authHandler'] = function ($c) {
     return new AuthHandler($c);
 };
@@ -101,17 +107,24 @@ $app->get('/profile', 'authCtrl:getProfile')
 $app->post('/profile', 'authCtrl:postProfile');
 
 // Event routes
-$app->get('/events/create', 'eventCtrl:getCreate')
+$app->get('/event/{id:[0-9]+}', 'eventCtrl:getSingle')
+    ->setName('Event.Single');
+
+$app->get('/event[/p/{page:[0-9]+}]', 'eventCtrl:getList')
+    ->setName('Event.List');
+
+$app->get('/event/create', 'eventCtrl:getCreate')
     ->setName('Event.Create');
 
-/*$app->get('/events/update', 'eventCtrl:getUpdate')
-    ->setName('Events.Create');
+$app->post('/event/create', 'eventCtrl:postCreate');
 
-$app->get('/events/[]', 'eventCtrl:getList')
-    ->setName('Events.List');
+$app->get('/event/update/{id:[0-9]+}', 'eventCtrl:getUpdate')
+    ->setName('Event.Update');
 
-$app->get('/events/single/{id:[0-9]+}', 'eventCtrl:getSingle')
-    ->setName('Events.Single');*/
+$app->post('/event/update/{id:[0-9]+}', 'eventCtrl:postUpdate');
+
+$app->post('/event/delete/{id:[0-9]+}', 'eventCtrl:postDelete')
+    ->setName('Event.Delete');
 
 
 

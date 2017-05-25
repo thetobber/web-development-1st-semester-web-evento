@@ -17,7 +17,11 @@
             <div class="col-small-12 col-medium-6 x2-space-small">
                 <div class="pane">
                     <h4>{{ event.title }}</h4>
-                    <p>{{ event.start | date('Y-m-d') }}</p>
+                    <p>
+                        <div>Held in <b>{{ event.city ~ ' - ' ~ event.country }}</b></div>
+                        <div>From <b>{{ event.start | date('Y-m-d') }}</b> to <b>{{ event.end | date('Y-m-d') }}</b></div>
+                    </p>
+                    
                     {% if event.description %}
                         <p>{{ event.description | slice(0, 100) }}...</p>
                     {% endif %}

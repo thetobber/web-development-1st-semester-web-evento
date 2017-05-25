@@ -7,6 +7,5 @@
 
 {% block body %}
     <h2>Single event</h2>
-    {{event|json_encode}}
-    {{args|json_encode}}
+    <a href="{{ path_for('Event.Update', {'id': params.event_id}) }}">{{ params.title }}</a>
 {% endblock %}

@@ -142,7 +142,18 @@ BEGIN
     SELECT * FROM `event_view` WHERE `id` = inEventId;
 END//
 
-DELIMITER ;
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE deleteEvent
+(
+    IN inEventId     BIGINT UNSIGNED
+)
+BEGIN
+    DECLARE addressId BIGINT UNSIGNED;
+
+    SELECT `address_id` INTO addressId FROM `event` WHERE `id` = inEventId;
+
+    DELETE FROM `event` WHERE `id` = inEventId;
+    DELETE FROM `address` WHERE `id` = addressId;
+END//
 
 /*
 set @countryId := (select `id` from `country` where `code` = 'DK');

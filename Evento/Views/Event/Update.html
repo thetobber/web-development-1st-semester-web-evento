@@ -83,4 +83,8 @@
 
         <button type="submit">Update event</button>
     </form>
+
+    <form action="{{ path_for('Event.Delete', {id: params.event_id}) }}" method="POST">
+        <button type="submit">Delete event</button>
+    </form>
 {% endblock %}

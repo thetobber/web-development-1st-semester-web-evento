@@ -24,7 +24,7 @@ class EventController extends AbstractController
 
         if ($event->hasContent()) {
             return $this->view($response, 'Event/Single.html', [
-                'event' => $event->getContent()
+                'params' => $event->getContent()
             ]);
         }
 
@@ -133,8 +133,12 @@ class EventController extends AbstractController
             return $this->redirect($response, 'Auth.SignIn');
         }
 
-        $params = $request->getParams();
+        $result = $this->repository->delete($args['id']);
 
-        
+        if ($result->hasSuccess()) {
+            return $this->redirect($response, 'Event.List');
+        }
+
+        return $this->redirect($response, 'Event.Update', ['id' => $params['event_id']]);
     }
 }

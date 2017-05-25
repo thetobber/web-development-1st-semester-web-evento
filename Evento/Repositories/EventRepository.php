@@ -179,6 +179,20 @@ class EventRepository extends AbstractRepository
 
     public function delete($id)
     {
+        try {
+            $statement = $this->handle->prepare('CALL deleteEvent(?)');
 
+            $statement->bindValue(1, $id, PDO::PARAM_INT);
+
+            $statement->execute();
+            $statement->closeCursor();
+
+            return new Result(null, Result::SUCCESS);
+        } catch (PDOException $exception) {
+            var_dump($exception);
+            die();
+        }
+
+        return new Result(null, Result::ERROR);
     }
 }

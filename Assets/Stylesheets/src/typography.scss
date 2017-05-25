@@ -1,0 +1,191 @@
+@import "variables.scss";
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v13/UyBMtLsHKBKXelqf4x7VRQ.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v13/1YwB1sO8YE1Lyjf12WNiUA.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v13/ObQr5XYcoH0WBoUxiaYK3_Y6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v13/H2DMvhDLycM56KNuAtbJYA.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 900;
+    src: local('Lato Black'), local('Lato-Black'), url(https://fonts.gstatic.com/s/lato/v13/R4a6fty3waPci7C44H8AjvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 900;
+    src: local('Lato Black'), local('Lato-Black'), url(https://fonts.gstatic.com/s/lato/v13/tI4j516nok_GrVf4dhunkg.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+body {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 1rem;
+    color: $textColor;
+    background-color: #FFF;
+}
+
+a {
+    position: relative;
+    cursor: pointer;
+    color: $textColor;
+    text-decoration: underline;
+    
+    &:hover,
+    &:focus,
+    &:active {
+        color: $textColor;
+        text-decoration: none;
+    }
+}
+
+%heading {
+    margin: 0 0 $padding 0;
+    line-height: 1;
+    font-weight: 900;
+}
+
+h1 {
+    @extend %heading;
+    font-size: floor($fontSize * 3);
+}
+
+@for $index from 2 through 6 {
+    #{h + $index} {
+        @extend %heading;
+        font-size: floor($fontSizeHeading * ((11 - $index) / 10));
+    }
+}
+
+p {
+    margin: 0 0 ($padding * 1.4) 0;
+}
+
+@mixin textUtils($name: null) {
+    .text-right-#{$name} {
+        text-align: right;
+    }
+
+    .text-center-#{$name} {
+        text-align: center;
+    }
+
+    .text-left-#{$name} {
+        text-align: left;
+    }
+
+    .text-light-#{$name} {
+        font-weight: 300;
+    }
+
+    .text-18-#{$name} {
+        font-size: 18px;
+    }
+
+    .text-20-#{$name} {
+        font-size: 20px;
+    }
+
+    .text-22-#{$name} {
+        font-size: 22px;
+    }
+}
+
+@include textUtils($small);
+
+@media (min-width: $breakpoint1) {
+    @include textUtils($medium);
+}
+
+@media (min-width: $breakpoint2) {
+    @include textUtils($large);
+}
+
+@media (min-width: $breakpoint3) {
+    @include textUtils($xlarge);
+}
+
+.burger {
+    position: relative;
+    display: block;
+    width: 24px;
+    height: 24px;
+
+    .line {
+        pointer-events: none;
+        width: 100%;
+        height: 0;
+        border-bottom: 2px solid $white;
+    }
+
+    .line:nth-child(1),
+    .line:nth-child(2),
+    .line:nth-child(3) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        backface-visibility: hidden;
+        transition: transform 0.4s ease-in-out;
+    }
+
+    .line:nth-child(2) {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
+    }
+
+    .line:nth-child(1) {
+        transform: translateY(4px);
+    }
+
+    .line:nth-child(2) {
+        transform: translateY(11px);
+    }
+
+    .line:nth-child(3) {
+        transform: translateY(18px);
+    }
+
+    &.active .line:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+
+    &.active .line:nth-child(2) {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    &.active .line:nth-child(3) {
+        transform: translateY(10px) rotate(-45deg);
+    }
+}

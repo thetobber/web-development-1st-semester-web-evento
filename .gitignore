@@ -1,3 +1,4 @@
 Vendor/*
+node_modules/*
 Evento/Cache/*
 !Evento/Cache/.gitkeep

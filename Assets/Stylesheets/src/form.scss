@@ -1,0 +1,127 @@
+@import "variables";
+
+input,
+textarea,
+select {
+    display: block;
+    width: 100%;
+    padding: $padding;
+    outline: 0 none;
+    border: 2px solid $textColor;
+    font-weight: bold;
+
+    &:focus {
+        outline: 0 none;
+        background-color: $textColor;
+        color: $white;
+    }
+
+    &::placeholder {
+        color: $textColor;
+    }
+
+    &:focus::placeholder {
+        color: $white;
+    }
+}
+
+select {
+    padding-top: $padding - 1px;
+    padding-bottom: $padding - 2px;
+}
+
+label {
+    display: inline-block;
+    padding-bottom: $gutter;
+    font-weight: bold;
+}
+
+input[type="button"],
+input[type="submit"],
+button {
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+}
+
+.date {
+    @media (min-width: $breakpoint1) {
+        max-width: 145px;
+    }
+}
+
+%button-teal {
+    border-color: $contraTeal;
+    color: $contraTeal;
+
+    &:hover,
+    &:focus {
+        background-color: $contraTeal;
+        color: $white;
+    }
+}
+
+%button-green {
+    border-color: $contraGreen;
+    color: $contraGreen;
+
+    &:hover,
+    &:focus {
+        background-color: $contraGreen;
+        color: $white;
+    }
+}
+
+%button-red {
+    border-color: $contraRed;
+    color: $contraRed;
+
+    &:hover,
+    &:focus {
+        background-color: $contraRed;
+        color: $white;
+    }
+}
+
+.button {
+    display: inline-block;
+    border: 2px solid $textColor;
+    padding: ($padding - 2px) ($padding * 2);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover,
+    &:focus {
+        background-color: $textColor;
+        color: $white;
+    }
+
+    &-small {
+        padding: ($padding / 2) $padding;
+    }
+
+    &-teal {
+        @extend %button-teal;
+    }
+
+    &-green {
+        @extend %button-green;
+    }
+
+    &-red {
+        @extend %button-red;
+    }
+}
+
+.teal .button {
+    @extend %button-teal;
+}
+
+.green .button {
+    @extend %button-green;
+}
+
+.red .button {
+    @extend %button-red;
+}

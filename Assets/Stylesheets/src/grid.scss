@@ -1,0 +1,218 @@
+@import "variables.scss";
+
+@function createName($prefix: null, $name: null, $index: null) {
+        @return "." + 
+                if($prefix, $prefix, "") + 
+                if($name, "-" + $name, "") + 
+                if($index, "-" + $index, "");
+}
+
+@mixin flexColumns($columns, $prefix: null, $name: null, $gutter: null) {
+    $colClasses: (
+        createName($prefix, $name + "-grow"),
+        createName($prefix, $name + "-shrink")
+    );
+
+    #{nth($colClasses, 1)} {
+        flex-basis: 0px;
+        flex-grow: 1;
+        max-width: 100%;
+    }
+
+    #{nth($colClasses, 2)} {
+        flex-basis: auto;
+        flex-grow: 0;
+        flex-shrink: 1;
+    }
+
+    @for $index from 1 through $columns {
+        $width: 100%/$columns*$index;
+        $colClass: createName($prefix, $name, $index);
+
+        #{$colClass} {
+            flex: 0 0 $width;
+            max-width: $width;
+        }
+
+        $colClasses: append($colClasses, $colClass, "comma");
+    }
+
+    @if $gutter {
+        #{$colClasses} {
+            padding-right: $gutter;
+            padding-left: $gutter;
+        }
+    }
+}
+
+//Make flex utilities e.g. centering children
+@mixin flexUtils($name: null) {
+    //Properties which is commented out is the default values
+    $flexProperties: (
+        flex: (
+            flex-direction: (
+                row: "row",
+                row-reverse: "row-reverse",
+                col: "column",
+                col-reverse: "column-reverse"
+            ),
+            flex-wrap: (
+                nowrap: "nowrap",
+                wrap: "wrap", //This is not the default, but .row has flex-wrap: wrap
+                wrap-reverse: "wrap-reverse"
+            )
+        ),
+        flex-justify: (
+            justify-content: (
+                start: "flex-start",
+                end: "flex-end",
+                center: "center",
+                between: "space-between",
+                around: "space-around"
+            )
+        ),
+        flex-self: (
+            align-self: (
+                auto: "auto",
+                start: "flex-start",
+                end: "flex-end",
+                center: "center",
+                baseline: "baseline",
+                stretch: "stretch"
+            )
+        ),
+        flex-items: (
+            align-items: (
+                start: "flex-start",
+                end: "flex-end",
+                center: "center",
+                baseline: "baseline",
+                stretch: "stretch"
+            )
+        ),
+        flex-content: (
+            align-content: (
+                start: "flex-start",
+                end: "flex-end",
+                center: "center",
+                between: "space-between",
+                around: "space-around",
+                stretch: "stretch"
+            )
+        )
+    );
+
+    @each $className, $propertyMap in $flexProperties {
+        @each $propertyName, $propertyValues in $propertyMap {
+            @each $key, $value in $propertyValues {
+                $cssClass: createName($className, $key, $name);
+
+                #{$cssClass} {
+                    #{$propertyName}: #{$value};
+                }
+            }
+        }
+    }
+}
+
+@mixin gridSpace($name) {
+    .row.nogutter-#{$name} {
+        margin: 0;
+
+        & > [class*="#{$prefix}"] {
+            padding: 0;
+        }
+    }
+
+    .space-#{$name} {
+        padding-bottom: 2 * $gutter !important;
+    }
+
+    .x2-space-#{$name} {
+        padding-bottom: 2 * (2 * $gutter) !important;
+    }
+
+    .x4-space-#{$name} {
+        padding-bottom: 4 * (2 * $gutter) !important;
+    }
+
+    .nospace-#{$name} {
+        padding-bottom: 0 !important;
+    }
+
+    .margin-#{$name} {
+        margin-bottom: 2 * $gutter !important;
+    }
+
+    .x2-margin-#{$name} {
+        margin-bottom: 2 * (2 * $gutter) !important;
+    }
+
+    .x4-margin-#{$name} {
+        margin-bottom: 4 * (2 * $gutter) !important;
+    }
+
+    .nomargin-#{$name} {
+        margin-bottom: 0 !important;
+    }
+
+    .nogutter-#{$name}:not(.row) {
+        padding: 0 !important;
+    }
+}
+
+.container {
+    padding: (2 * $gutter);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 (-$gutter);
+}
+
+ul.row {
+    list-style: none;
+    padding: 0;
+}
+
+//SMALL BREAKPOINT
+@include flexUtils($small);
+@include flexColumns($columns, $prefix, $small, $gutter);
+@include gridSpace($small);
+
+
+// MEDIUM BREAKPOINT
+@media (min-width: $breakpoint1) {
+    .container {
+        max-width: $breakpoint1;
+    }
+
+    @include flexUtils($medium);
+    @include flexColumns($columns, $prefix, $medium, $gutter);
+    @include gridSpace($medium);
+}
+
+//LARGE BREAKPOINT
+@media (min-width: $breakpoint2) {
+    .container {
+        max-width: $breakpoint2;
+    }
+
+    @include flexUtils($large);
+    @include flexColumns($columns, $prefix, $large, $gutter);
+    @include gridSpace($large);
+}
+
+//XLARGE BREAKPOINT
+@media (min-width: $breakpoint3) {
+    .container {
+        max-width: $breakpoint3;
+    }
+
+    @include flexUtils($xlarge);
+    @include flexColumns($columns, $prefix, $xlarge, $gutter);
+    @include gridSpace($xlarge);
+}

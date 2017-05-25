@@ -1,0 +1,37 @@
+//Grid variables 
+$prefix: "col";
+$small: "small";
+$medium: "medium";
+$large: "large";
+$xlarge: "xlarge";
+$columns: 12;
+$gutter: 7px;
+
+//$breakpoint0: 320px;
+$breakpoint1: 544px;
+$breakpoint2: 768px;
+$breakpoint3: 992px;
+//$breakpoint3: 1200px;
+
+//Other
+$fontSize: 16px;
+$fontSizeHeading: $fontSize * 2;
+$lineHeight: 1.4;
+$radius: 6px;
+$padding: $fontSize;
+
+//COLORS
+$black: #000000;
+$white: #FFFFFF;
+
+$teal: #84D2DA;
+$contraTeal: #263D40;
+
+$green: #84d96c;
+$contraGreen: #274020;
+
+$red: #d95f5f;
+$contraRed: #401c1c;
+
+$textColor: #2B2E33;
+$borderColor: #A6A6A6;

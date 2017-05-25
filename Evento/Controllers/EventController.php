@@ -141,7 +141,8 @@ class EventController extends AbstractController
         ]);
     }
 
-    public function postDelete($request, $response, $args) {
+    public function postDelete($request, $response, $args)
+    {
         if (!$this->authHandler->hasRole('admin')) {
             return $this->redirect($response, 'Auth.SignIn');
         }

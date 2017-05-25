@@ -10,20 +10,10 @@ use Respect\Validation\Validator as Respect;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
- * 
+ *
  */
 class CategoryRepository extends AbstractRepository
 {
-    public function create(array $event)
-    {
-
-    }
-
-    public function read($id)
-    {
-
-    }
-
     public function readAll()
     {
         try {
@@ -36,20 +26,11 @@ class CategoryRepository extends AbstractRepository
             if ($categories !== false) {
                 return new Result($categories, Result::SUCCESS);
             }
-        } catch (PDOException $exeption) {}
+        } catch (PDOException $exeption) {
+        }
 
         return new Result(null, Result::ERROR, [
             'database' => 'An unexpected error occurred.'
         ]);
-    }
-
-    public function update(array $event)
-    {
-
-    }
-
-    public function delete($id)
-    {
-
     }
 }

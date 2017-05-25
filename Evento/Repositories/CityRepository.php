@@ -20,7 +20,8 @@ class CityRepository extends AbstractRepository
             if ($cities !== false) {
                 return new Result($cities, Result::SUCCESS);
             }
-        } catch (PDOException $exeption) {}
+        } catch (PDOException $exeption) {
+        }
 
         return new Result(null, Result::ERROR, [
             'database' => 'An unexpected error occurred.'

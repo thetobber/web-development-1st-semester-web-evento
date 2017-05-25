@@ -9,9 +9,6 @@ use Evento\Repositories\RepositoryResult as Result;
 use Respect\Validation\Validator as Respect;
 use Respect\Validation\Exceptions\NestedValidationException;
 
-/**
- * 
- */
 class EventRepository extends AbstractRepository
 {
     public function create(array $event)

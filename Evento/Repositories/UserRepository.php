@@ -98,7 +98,8 @@ class UserRepository extends AbstractRepository
             if ($user !== false) {
                 return new Result($user, Result::SUCCESS);
             }
-        } catch (PDOException $exeption) {}
+        } catch (PDOException $exeption) {
+        }
 
         return new Result(null, Result::ERROR, [
             'credentials' => 'Wrong username or password.'

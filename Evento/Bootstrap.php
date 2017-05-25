@@ -17,8 +17,6 @@ use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Evento\Models\AuthHandler;
 use Evento\Middleware\GeneralMiddleware;
-use Evento\Middleware\GuestMiddleware;
-use Evento\Middleware\AuthMiddleware;
 use Evento\Controllers\AuthController;
 use Evento\Controllers\MainController;
 use Evento\Controllers\EventController;

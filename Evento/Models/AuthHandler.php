@@ -7,13 +7,13 @@ use Evento\Models\Validator;
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
- * Defines an handler for checking if an user is signed in 
+ * Defines an handler for checking if an user is signed in
  * or has a role.
  */
 class AuthHandler
 {
     /**
-     * Removes data about the user from the current session 
+     * Removes data about the user from the current session
      * to sign out.
      */
     public function unsetUserSession()

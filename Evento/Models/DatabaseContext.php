@@ -6,7 +6,7 @@ use PDOException;
 use Evento\Config;
 
 /**
- * Represents a singlton which handles the connection between 
+ * Represents a singlton which handles the connection between
  * the application and a database server.
  */
 class DatabaseContext
@@ -17,7 +17,7 @@ class DatabaseContext
     protected static $pdo;
 
     /**
-     * Constructor with an access modifier of private to 
+     * Constructor with an access modifier of private to
      * prevent instantiation.
      */
     private function __construct()
@@ -25,8 +25,8 @@ class DatabaseContext
     }
 
     /**
-     * Creates a new instance of the PDO class or returns an 
-     * existing instance if this method has already been 
+     * Creates a new instance of the PDO class or returns an
+     * existing instance if this method has already been
      * invoked once before.
      */
     public static function getInstance()

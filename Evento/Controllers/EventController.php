@@ -21,10 +21,12 @@ class EventController extends AbstractController
     public function getSingle($request, $response, $args)
     {
         $event = $this->repository->read($args['id']);
+        $participants = $this->repository->readParticipants($args['id']);
 
-        if ($event->hasContent()) {
+        if ($event->hasContent() && $participants->hasSuccess()) {
             return $this->view($response, 'Event/Single.html', [
-                'params' => $event->getContent()
+                'params' => $event->getContent(),
+                'participants' => $participants->getContent()
             ]);
         }
 
@@ -159,7 +161,7 @@ class EventController extends AbstractController
     public function postParticipate($request, $response, $args)
     {
         if (!$this->authHandler->isVerified()) {
-            return $this-redirect($response, 'Auth.SingIn');
+            return $this->redirect($response, 'Auth.SignIn');
         }
 
         $result = $this->repository->participate($_SESSION['user']['id'], $args['id']);

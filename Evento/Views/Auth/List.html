@@ -14,9 +14,9 @@
 {% block body %}
     <h2>Listing of events</h2>
 
-    <div class="row flex-justify-center-small x2-space-small">
+    <div class="row flex-justify-center-small">
         {% for event in events %}
-            <div class="col-small-12 col-medium-6 col-large-4 col-xlarge-3 x2-space-small">
+            <div class="col-small-12 col-medium-6 col-large-4 col-xlarge-3 space-small">
                 <div class="pane">
                     <h4 class="space-small">{{ event.title }}</h4>
                     <a class="button button-small" href="{{ path_for('Event.Single', {'id': event.event_id}) }}">View event</a>

@@ -124,6 +124,14 @@
         }
     }
 
+    .hidden-#{$name} {
+        display: none;
+    }
+
+    .visible-#{$name} {
+        display: block;
+    }
+
     .space-#{$name} {
         padding-bottom: 2 * $gutter !important;
     }

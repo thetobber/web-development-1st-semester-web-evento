@@ -12,78 +12,82 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path_for('Event.Create') }}" method="POST">
-        <fieldset>
-            <legend>Address</legend>
+    <form action="{{ path_for('Event.Create') }}" method="POST" autocomplete="off">
 
-            <label for="address1">Address line 1</label>
-            <input id="address1" name="address1" type="text" placeholder="Address line 1" value="{{ params.address1 }}">
-            {% if errors.address1 %}
-                <div class="error-block">{{ errors.address1 }}</div>
-            {% endif %}
+        <div class="row">
+            <div class="col-small-12 space-small">
+                <label for="address1">Address line 1</label>
+                <input id="address1" name="address1" type="text" placeholder="Address line 1" value="{{ params.address1 }}">
+                {% if errors.address1 %}
+                    <div class="error-block">{{ errors.address1 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="address2">Address line 2</label>
+                <input id="address2" name="address2" type="text" placeholder="Address line 2" value="{{ params.address2 }}">
+                {% if errors.address2 %}
+                    <div class="error-block">{{ errors.address2 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="postal_code">Postal code</label>
+                <input id="postal_code" name="postal_code" type="text" placeholder="Postal code" value="{{ params.postal_code }}">
+                {% if errors.postal_code %}
+                    <div class="error-block">{{ errors.postal_code }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="city_id">City</label>
+                <select id="city_id" name="city_id">
+                    {% for city in cities %}
+                        <option value="{{ city.id }}" {{ city.id == params.city_id ? 'selected' : '' }}>{{ city.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if errors.city_id %}
+                    <div class="error-block">{{ errors.city_id }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="country">Country</label>
+                <input id="country" type="text" value="Denmark" disabled>
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="title">Title</label>
+                <input id="title" name="title" type="text" placeholder="Title" value="{{ params.title }}">
+                {% if errors.title %}
+                    <div class="error-block">{{ errors.title }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Description">{{ params.description }}</textarea>
+                {% if errors.description %}
+                    <div class="error-block">{{ errors.description }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="category">Category</label>
+                <input id="category" name="category" type="text" placeholder="Category" value="{{ params.category }}">
+                {% if errors.category %}
+                    <div class="error-block">{{ errors.category }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="start">Start date</label>
+                <input id="start" name="start" type="text" placeholder="Start date" value="{{ params.start ?? 'now' | date('Y-m-d H:i:s') }}">
+                {% if errors.start %}
+                    <div class="error-block">{{ errors.start }}</div>
+                {% endif %}
+            </div>
+            <div class="col-small-12 space-small">
+                <label for="end">End date</label>
+                <input id="end" name="end" type="text" placeholder="End date" value="{{ params.end ?? 'now' | date('Y-m-d H:i:s') }}">
+                {% if errors.end %}
+                    <div class="error-block">{{ errors.end }}</div>
+                {% endif %}
+            </div>
+        </div>
 
-            <label for="address2">Address line 2</label>
-            <input id="address2" name="address2" type="text" placeholder="Address line 2" value="{{ params.address2 }}">
-            {% if errors.address2 %}
-                <div class="error-block">{{ errors.address2 }}</div>
-            {% endif %}
-
-            <label for="postal_code">Postal code</label>
-            <input id="postal_code" name="postal_code" type="text" placeholder="Postal code" value="{{ params.postal_code }}">
-            {% if errors.postal_code %}
-                <div class="error-block">{{ errors.postal_code }}</div>
-            {% endif %}
-
-            <label for="city_id">City</label>
-            <select id="city_id" name="city_id">
-                {% for city in cities %}
-                    <option value="{{ city.id }}" {{ city.id == params.city_id ? 'selected' : '' }}>{{ city.name }}</option>
-                {% endfor %}
-            </select>
-            {% if errors.city_id %}
-                <div class="error-block">{{ errors.city_id }}</div>
-            {% endif %}
-
-            <label for="country">Country</label>
-            <input id="country" type="text" value="Denmark" disabled>
-        </fieldset>
-
-        <fieldset>
-            <legend>Event information</legend>
-
-            <label for="title">Title</label>
-            <input id="title" name="title" type="text" placeholder="Title" value="{{ params.title }}">
-            {% if errors.title %}
-                <div class="error-block">{{ errors.title }}</div>
-            {% endif %}
-
-            <label for="description">Description</label>
-            <textarea id="description" name="description" placeholder="Description">{{ params.description }}</textarea>
-            {% if errors.description %}
-                <div class="error-block">{{ errors.description }}</div>
-            {% endif %}
-
-
-            <label for="category">Category</label>
-            <input id="category" name="category" type="text" placeholder="Category" value="{{ params.category }}">
-            {% if errors.category %}
-                <div class="error-block">{{ errors.category }}</div>
-            {% endif %}
-
-            <label for="start">Start date</label>
-            <input id="start" name="start" type="text" placeholder="Start date" value="{{ params.start ?? 'now' | date('Y-m-d H:i:s') }}">
-            {% if errors.start %}
-                <div class="error-block">{{ errors.start }}</div>
-            {% endif %}
-
-            <label for="end">End date</label>
-            <input id="end" name="end" type="text" placeholder="End date" value="{{ params.end ?? 'now' | date('Y-m-d H:i:s') }}">
-            {% if errors.end %}
-                <div class="error-block">{{ errors.end }}</div>
-            {% endif %}
-
-        </fieldset>
-
-        <button type="submit">Create event</button>
+        <button class="button" type="submit">Create event</button>
     </form>
 {% endblock %}

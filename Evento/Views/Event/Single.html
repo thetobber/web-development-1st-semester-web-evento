@@ -1,4 +1,6 @@
 {% extends 'Shared/Layout.html' %}
+{% set addressPart1 = params.address1 ~ ' ' ~ params.address2 %}
+{% set addressPart2 = params.postal_code ~ ' ' ~ params.city ~ ', ' ~ params.country %}
 
 {% block head %}
     {{ parent() }}
@@ -12,10 +14,40 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Single event</h2>
-    <a href="{{ path_for('Event.Update', {'id': params.event_id}) }}">{{ params.title }}</a>
+    <div class="row x2-space-small">
+        <div class="col-small-12 col-medium-shrink space-small nospace-medium">
+            <form action="{{ path_for('Event.Participate', {'id': params.event_id}) }}" method="POST">
+                <button class="button button-small" type="submit">
+                    {% if user.id in participants %}
+                        <span>Un-participate</span>
+                    {% else %}
+                        <span>Participate</span>
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+        <div class="hidden-small visible-medium col-medium-grow">
+            <div class="pane pane-fill"></div>
+        </div>
+        {% if user.admin %}
+            <div class="col-small-12 col-medium-shrink space-small nospace-medium">
+                <a class="button button-small" href="{{ path_for('Event.Update', {'id': params.event_id}) }}">Update</a>
+            </div>
+            <div class="col-small-12 col-medium-shrink">
+                <a class="button button-small" href="{{ path_for('Event.Delete', {'id': params.event_id}) }}">Delete</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="pane">
+        <h4>{{ params.title }}</h4>
+        <div>At <b>{{ addressPart1 }}, {{ addressPart2 }}</b></div>
+        <p>From <b>{{ params.start | date('Y-m-d H:i:s') }}</b> to <b>{{ params.end | date('Y-m-d H:i:s') }}</b></p>
 
-    <form action="{{ path_for('Event.Participate', {'id': params.event_id}) }}" method="POST">
-        <button type="submit">Participate in {{ params.title }}</button>
-    </form>
+        {% if params.description %}
+            <p>{{ params.description | nl2br }}</p>
+        {% endif %}
+
+        <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAJ4z06vdTUt-T4HAHk-fdsEZ1_Gc1SCmY&q={{ addressPart1 ~ addressPart2 | url_encode }}" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    </div>
 {% endblock %}

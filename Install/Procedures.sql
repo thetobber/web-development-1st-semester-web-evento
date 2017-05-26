@@ -153,6 +153,19 @@ BEGIN
     DELETE FROM `address` WHERE `id` = addressId;
 END//
 
+CREATE DEFINER = 'evento'@'localhost' PROCEDURE toggleParticipate
+(
+    IN inUserId  BIGINT UNSIGNED,
+    IN inEventId BIGINT UNSIGNED
+)
+BEGIN
+    IF EXISTS (SELECT `id` FROM `participant` WHERE `user_id` = inUserId AND `event_id` = inEventId) THEN
+        DELETE FROM `participant` WHERE `user_id` = inUserId AND `event_id` = inEventId;
+    ELSE
+        INSERT INTO `participant` (`user_id`, `event_id`) VALUES (inUserId, inEventId);
+    END IF;
+END//
+
 
 DELIMITER ;
 /*

@@ -147,7 +147,7 @@ CREATE TABLE `participant` (
 -- Participant view with user and event joined
 --
 CREATE VIEW `participant_view` AS
-    SELECT `u`.`username`, `e`.`title`
+    SELECT `p`.`id`, `e`.`id` AS `event_id`, `u`.`id` AS `user_id`, `u`.`username` AS `username`
         FROM `participant` AS `p`
         INNER JOIN `user` AS `u`
             ON `p`.`user_id` = `u`.`id`

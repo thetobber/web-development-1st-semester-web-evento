@@ -16,3 +16,24 @@
         opacity: 1;
     }
 }
+
+@keyframes color-pulse {
+    0% {
+        background-color: darken($red, 20%);
+        border-color: $red;
+    }
+
+    33% {
+        background-color: darken($teal, 20%);
+        border-color: $teal;
+    }
+
+    66% {
+        background-color: darken($green, 20%);
+        border-color: $green;
+    }
+    100% {
+        background-color: darken($red, 20%);
+        border-color: $red;
+    }
+}

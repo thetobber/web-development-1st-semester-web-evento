@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path_for('Auth.SignUp') }}" method="POST">
+    <form action="{{ path_for('Auth.SignUp') }}" method="POST" autocomplete="off">
         <div class="row">
             <div class="col-small-12 space-small">
                 <label for="username">Username</label>
@@ -42,6 +42,13 @@
             <div class="error-block space-small">{{ errors.database }}</div>
         {% endif %}
 
-        <button class="button" type="submit">Sign up</button>
+        <div class="row">
+            <div class="col-small-shrink">
+                <button class="button button-small" type="submit">Sign up</button>
+            </div>
+            <div class="col-small-grow">
+                <div class="pane pane-fill"></div>
+            </div>
+        </div>
     </form>
 {% endblock %}

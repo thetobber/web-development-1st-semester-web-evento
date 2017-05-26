@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ base_url() }}/Assets/Stylesheets/style.css" media="all">
+        <link rel="stylesheet" href="{{ base_url() }}/Assets/Stylesheets/style.css">
     {% endblock %}
 </head>
 
@@ -14,7 +14,11 @@
     <header id="header" class="{% block bannerStyle %}teal{% endblock %}">
         <nav id="navigation">
             <ul class="container">
-                <li class="mr-auto-small"><a class=" mono" href="/">EVENTO</a></li>
+                <li class="mr-auto-small">
+                    <a class="mono" href="{{ path_for('Main') }}">
+                        <img class="mono-svg" src="{{ base_url() }}/Assets/Images/Evento.svg">
+                    </a>
+                </li>
                 <li><a href="{{ path_for('Main') }}">Home</a></li>
                 <li><a href="{{ path_for('Event.List') }}">Events</a></li>
                 {% if user %}
@@ -46,12 +50,9 @@
         <footer id="footer">
             <section class="container">
                 <div class="text-center-small">
-                    <div>
-                        <a class="mono" href="/">EVENTO</a>
-                    </div>
-                    <div>
-                        <b>2017</b>
-                    </div>
+                    <a class="mono" href="{{ path_for('Main') }}">
+                        <img class="mono-svg" src="{{ base_url() }}/Assets/Images/Evento.svg">
+                    </a>
                 </div>
             </section>
         </footer>

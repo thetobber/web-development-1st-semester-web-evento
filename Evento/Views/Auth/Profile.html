@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ path_for('Auth.Profile') }}" method="POST">
+    <form action="{{ path_for('Auth.Profile') }}" method="POST" autocomplete="off">
         <div class="row">
             <div class="col-small-12 space-small">
                 <label for="username">E-mail</label>
@@ -41,6 +41,13 @@
             </div>
         </div>
 
-        <button class="button" type="submit">Update</button>
+        <div class="row">
+            <div class="col-small-shrink">
+                <button class="button button-small" type="submit">Submit update</button>
+            </div>
+            <div class="col-small-grow">
+                <div class="pane pane-fill"></div>
+            </div>
+        </div>
     </form>
 {% endblock %}

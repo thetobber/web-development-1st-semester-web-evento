@@ -12,7 +12,18 @@
 {% endblock %}
 
 {% block body %}
-    <form class="space-small" action="{{ path_for('Event.Update', {id: params.event_id}) }}" method="POST">
+    <div class="row space-small">
+        <div class="col-small-grow">
+            <div class="pane pane-fill"></div>
+        </div>
+        <div class="col-small-shrink">
+            <form action="{{ path_for('Event.Delete', {id: params.event_id}) }}" method="POST">
+                <button class="button button-small" type="submit">Delete this event</button>
+            </form>
+        </div>
+    </div>
+
+    <form class="space-small" action="{{ path_for('Event.Update', {id: params.event_id}) }}" method="POST" autocomplete="off">
         <input name="event_id" type="hidden" value="{{ params.event_id }}">
         <input name="address_id" type="hidden" value="{{ params.address_id }}">
 
@@ -90,10 +101,13 @@
             </div>
         </div>
 
-        <button class="button" type="submit">Update</button>
-    </form>
-
-    <form class="red" action="{{ path_for('Event.Delete', {id: params.event_id}) }}" method="POST">
-        <button class="button button-red" type="submit">Delete</button>
+        <div class="row">
+            <div class="col-small-shrink">
+                <button class="button button-small" type="submit">Submit update</button>
+            </div>
+            <div class="col-small-grow">
+                <div class="pane pane-fill"></div>
+            </div>
+        </div>
     </form>
 {% endblock %}

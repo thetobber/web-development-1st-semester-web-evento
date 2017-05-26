@@ -90,10 +90,11 @@ class EventRepository extends AbstractRepository
     public function readAll($limit = 10, $offset = 0)
     {
         try {
-            $statement = $this->handle->prepare('SELECT * FROM `event_view` ORDER BY `start` DESC LIMIT ? OFFSET ?');
+            //$statement = $this->handle->prepare('SELECT * FROM `event_view` ORDER BY `start` DESC LIMIT ? OFFSET ?');
+            $statement = $this->handle->prepare('SELECT * FROM `event_view` ORDER BY `start` DESC');
 
-            $statement->bindValue(1, $limit, PDO::PARAM_INT);
-            $statement->bindValue(2, $offset, PDO::PARAM_INT);
+            //$statement->bindValue(1, $limit, PDO::PARAM_INT);
+            //$statement->bindValue(2, $offset, PDO::PARAM_INT);
 
             $statement->execute();
 
@@ -196,7 +197,7 @@ class EventRepository extends AbstractRepository
     public function participate($user_id, $event_id)
     {
         try {
-            $statement = $this->handle->prepare('INSERT INTO `participant` (`user_id`, `event_id`) VALUES (?, ?)');
+            $statement = $this->handle->prepare('CALL toggleParticipate(?, ?)');
 
             $statement->bindValue(1, $user_id, PDO::PARAM_INT);
             $statement->bindValue(2, $event_id, PDO::PARAM_INT);
@@ -205,6 +206,29 @@ class EventRepository extends AbstractRepository
             $statement->closeCursor();
 
             return new Result(null, Result::SUCCESS);
+        } catch (PDOException $exception) {
+        }
+
+        return new Result(null, Result::ERROR);
+    }
+    
+    public function readParticipants($id)
+    {
+        try {
+            $statement = $this->handle->prepare('SELECT * FROM `participant_view` WHERE `event_id` = ?');
+
+            $statement->bindValue(1, $id, PDO::PARAM_INT);
+
+            $statement->execute();
+
+            $participants = $statement->fetch(PDO::FETCH_ASSOC);
+            $statement->closeCursor();
+
+            if ($participants !== false) {
+                return new Result($participants, Result::SUCCESS);
+            }
+
+            return new Result($participants, Result::SUCCESS);
         } catch (PDOException $exception) {
             var_dump($exception);
             die();

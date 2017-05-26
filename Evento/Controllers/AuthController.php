@@ -126,7 +126,7 @@ class AuthController extends AbstractController
 
         //Unset the user array of data
         $this->authHandler->unsetUserSession();
-        return $this->redirect($response, 'Main');
+        return $this->redirect($response, 'Auth.Profile');
     }
 
     /**

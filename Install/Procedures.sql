@@ -31,18 +31,6 @@ BEGIN
 END//
 
 --
--- Read multiple users paginated procedure
---
-CREATE DEFINER = 'evento'@'localhost' PROCEDURE readUsers
-(
-    IN inLimit BIGINT UNSIGNED,
-    IN inOffset BIGINT UNSIGNED
-)
-BEGIN
-    SELECT * FROM `user` LIMIT inLimit OFFSET inOffset;
-END//
-
---
 -- Update user procedure
 --
 CREATE DEFINER = 'evento'@'localhost' PROCEDURE updateUser
@@ -66,7 +54,7 @@ CREATE DEFINER = 'evento'@'localhost' PROCEDURE deleteUser
     IN inUsername VARCHAR(250)
 )
 BEGIN
-    DELETE FROM `users` WHERE `username` = inUsername;
+    DELETE FROM `user` WHERE `username` = inUsername;
 END//
 
 --

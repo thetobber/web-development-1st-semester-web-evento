@@ -1,19 +1,79 @@
 <?php
 namespace Evento\Controllers;
 
-/**
-* Represents the main controller which is accessible to
-* all clients. This controller handles routes for pages
-* such as the frontpage.
-*/
+use Evento\Repositories\UserRepository;
+use Evento\Models\Role;
+
 class MainController extends AbstractController
 {
-    /**
-     * Renders the Main/Index view and write the parsed
-     * HTML to the body the response.
-     */
-    public function getIndex($request, $response)
+    public function getUserList($request, $response)
     {
-        return $this->view($response, 'Main/Index.html');
+        if (!$this->authHandler->hasRole('admin')) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
+        $repo = new UserRepository();
+
+        $users = $repo->readAll();
+
+        if ($users->hasContent()) {
+            return $this->view($response, 'Main/UserList.html', [
+                'users' => $users->getContent(),
+                'role' => Role::NAME
+            ]);
+        }
+
+        return $this->view($response, 'Static/500.html');
+    }
+
+    public function deleteUser($request, $response, $args)
+    {
+        if (!$this->authHandler->hasRole('admin')) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
+        $repo = new UserRepository();
+
+        $result = $repo->delete($args['name']);
+
+        if ($result->hasSuccess()) {
+            return $this->redirect($response, 'Main.UserList');
+        }
+
+        return $this->view($response, 'Static/500.html');
+    }
+
+    public function promoteUser($request, $response, $args)
+    {
+        if (!$this->authHandler->hasRole('admin')) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
+        $repo = new UserRepository();
+
+        $result = $repo->setRole($args['name'], Role::ADMIN);
+
+        if ($result->hasSuccess()) {
+            return $this->redirect($response, 'Main.UserList');
+        }
+
+        return $this->view($response, 'Static/500.html');
+    }
+
+    public function demoteUser($request, $response, $args)
+    {
+        if (!$this->authHandler->hasRole('admin')) {
+            return $this->redirect($response, 'Auth.SignIn');
+        }
+
+        $repo = new UserRepository();
+
+        $result = $repo->setRole($args['name'], Role::MEMBER);
+
+        if ($result->hasSuccess()) {
+            return $this->redirect($response, 'Main.UserList');
+        }
+
+        return $this->view($response, 'Static/500.html');
     }
 }

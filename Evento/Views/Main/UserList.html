@@ -1,0 +1,49 @@
+{% extends 'Shared/Layout.html' %}
+
+{% block head %}
+    {{ parent() }}
+    <title>Evento - Users</title>
+{% endblock %}
+
+{% block bannerStyle %}green{% endblock %}
+
+{% block bannerContent %}
+    <h1 class="text-center-small nomargin-small h1-big">Users</h1>
+{% endblock %}
+
+{% block body %}
+    <div class="row flex-justify-center-small">
+        {% for user1 in users %}
+            <div class="col-small-12 col-large-6 col-xlarge-4 space-small">
+                <div class="pane">
+                    <table class="margin-small">
+                        <tbody>
+                            <tr>
+                                <td><b>Username</b></td>
+                                <td class="text-right-small">{{ user1.username }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Role</b></td>
+                                <td class="text-right-small">{{ role[user1.role]  }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    {% if user1.role == 1 %}
+                        <form class="space-small" action="{{ path_for('Main.UserDemote', {'name': user1.username}) }}" method="POST">
+                            <button class="button button-small" type="submit">Demote to member</button>
+                        </form>
+                    {% else %}
+                        <form class="space-small" action="{{ path_for('Main.UserPromote', {'name': user1.username}) }}" method="POST">
+                            <button class="button button-small" type="submit">Promote to admin</button>
+                        </form>
+                    {% endif %}
+
+                    <form action="{{ path_for('Main.UserDelete', {'name': user1.username}) }}" method="POST">
+                        <button class="button button-small" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

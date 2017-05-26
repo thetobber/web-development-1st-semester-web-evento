@@ -15,12 +15,14 @@
         <nav id="navigation">
             <ul class="container">
                 <li class="mr-auto-small">
-                    <a class="mono" href="{{ path_for('Main') }}">
+                    <a class="mono" href="{{ path_for('Event.List') }}">
                         <img class="mono-svg" src="{{ base_url() }}/Assets/Images/Evento.svg">
                     </a>
                 </li>
-                <li><a href="{{ path_for('Main') }}">Home</a></li>
                 <li><a href="{{ path_for('Event.List') }}">Events</a></li>
+                {% if user.admin %}
+                    <li><a href="{{ path_for('Main.UserList') }}">Users</a></li>
+                {% endif %}
                 {% if user %}
                     <li><a href="{{ path_for('Auth.Profile') }}">Profile</a></li>
                     <li><a href="{{ path_for('Auth.SignOut') }}">Sign Out</a></li>
@@ -50,7 +52,7 @@
         <footer id="footer">
             <section class="container">
                 <div class="text-center-small">
-                    <a class="mono" href="{{ path_for('Main') }}">
+                    <a class="mono" href="{{ path_for('Event.List') }}">
                         <img class="mono-svg" src="{{ base_url() }}/Assets/Images/Evento.svg">
                     </a>
                 </div>

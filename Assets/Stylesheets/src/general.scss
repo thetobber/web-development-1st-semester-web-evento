@@ -117,3 +117,10 @@ textarea::-webkit-scrollbar-track {
 textarea::-webkit-scrollbar-thumb {
     background-color: $borderColor; 
 }
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}

@@ -1,6 +1,7 @@
 @import "variables.scss";
 
-.pane {   
+.pane {
+    position: relative;
     border: 2px solid $borderColor;
     padding: $padding;
 }
@@ -11,4 +12,8 @@
     height: 100%;
     background-color: $textColor;
     border: 0;
+}
+
+[class*="col-"] > .pane {
+    height: 100%;
 }

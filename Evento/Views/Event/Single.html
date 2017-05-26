@@ -34,7 +34,9 @@
                 <a class="button button-small" href="{{ path_for('Event.Update', {'id': params.event_id}) }}">Update</a>
             </div>
             <div class="col-small-12 col-medium-shrink">
-                <a class="button button-small" href="{{ path_for('Event.Delete', {'id': params.event_id}) }}">Delete</a>
+                <form action="{{ path_for('Event.Delete', {'id': params.event_id}) }}" method="POST">
+                    <button class="button button-small" type="submit">Delete</button>
+                </form>
             </div>
         {% endif %}
     </div>

@@ -91,11 +91,11 @@ $app->get(Config::BASE_PATH.'/profile', 'authCtrl:getProfile')
 $app->post(Config::BASE_PATH.'/profile', 'authCtrl:postProfile');
 
 // Event routes
+$app->get(Config::BASE_PATH.'/[p/{page:[0-9]+}]', 'eventCtrl:getList')
+    ->setName('Event.List');
+
 $app->get(Config::BASE_PATH.'/event/{id:[0-9]+}', 'eventCtrl:getSingle')
     ->setName('Event.Single');
-
-$app->get(Config::BASE_PATH.'/event[/p/{page:[0-9]+}]', 'eventCtrl:getList')
-    ->setName('Event.List');
 
 $app->get(Config::BASE_PATH.'/event/create', 'eventCtrl:getCreate')
     ->setName('Event.Create');
@@ -113,8 +113,17 @@ $app->post(Config::BASE_PATH.'/event/delete/{id:[0-9]+}', 'eventCtrl:postDelete'
 $app->post(Config::BASE_PATH.'/event/participate/{id:[0-9]+}', 'eventCtrl:postParticipate')
     ->setName('Event.Participate');
 
-// Main routes
-$app->get(Config::BASE_PATH.'/', 'mainCtrl:getIndex')
-    ->setName('Main');
+
+$app->get(Config::BASE_PATH.'/user', 'mainCtrl:getUserList')
+    ->setName('Main.UserList');
+
+$app->post(Config::BASE_PATH.'/user/{name:[a-zA-Z0-9_-]+}', 'mainCtrl:deleteUser')
+    ->setName('Main.UserDelete');
+
+$app->post(Config::BASE_PATH.'/user/promote/{name:[a-zA-Z0-9_-]+}', 'mainCtrl:promoteUser')
+    ->setName('Main.UserPromote');
+
+$app->post(Config::BASE_PATH.'/user/demote/{name:[a-zA-Z0-9_-]+}', 'mainCtrl:demoteUser')
+    ->setName('Main.UserDemote');
 
 $app->run();

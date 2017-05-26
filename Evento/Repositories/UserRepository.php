@@ -106,34 +106,23 @@ class UserRepository extends AbstractRepository
         ]);
     }
 
-    /**
-     * Read multiple user records from the database filtered by a
-     * limit and an offset.
-     *
-     * @param int $limit
-     * @param int $offset
-     * @return array|PDOException
-     */
-    public function readAll($limit = 20, $offset = 0)
+    public function readAll()
     {
         try {
-            $statement = $this->handle->prepare('CALL readUsers(?, ?)');
-            $statement->bindValue(1, $limit, PDO::PARAM_INT);
-            $statement->bindValue(2, $offset, PDO::PARAM_INT);
+            $statement = $this->handle->prepare('SELECT * FROM `user`;');
 
             $statement->execute();
+
+            $users = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $statement->closeCursor();
+
+            if ($users !== false) {
+                return new Result($users, Result::SUCCESS);
+            }
         } catch (PDOException $exeption) {
-            return $exeption;
         }
 
-        $users = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $statement->closeCursor();
-
-        if ($users !== false) {
-            return $users;
-        }
-
-        return null;
+        return new Result(null, Result::ERROR);
     }
 
     /**
@@ -181,18 +170,41 @@ class UserRepository extends AbstractRepository
     /**
      * Delete a single user record from the database by username.
      */
-    public function delete(array $user)
+    public function delete($username)
     {
         try {
             $statement = $this->handle->prepare('CALL deleteUser(?)');
             $statement->bindValue(1, $username, PDO::PARAM_STR);
 
             $statement->execute();
+            $statement->closeCursor();
+
+            return new Result(null, Result::SUCCESS);
         } catch (PDOException $exeption) {
-            return $exeption;
+            var_dump($exeption);
+            die();
         }
 
-        $statement->closeCursor();
-        return null;
+        return new Result(null, Result::ERROR);
+    }
+
+    public function setRole($username, $role)
+    {
+        try {
+            $statement = $this->handle->prepare('UPDATE `user` SET `role` = ? WHERE `username` = ?');
+
+            $statement->bindValue(1, $role, PDO::PARAM_INT);
+            $statement->bindValue(2, $username, PDO::PARAM_STR);
+
+            $statement->execute();
+            $statement->closeCursor();
+
+            return new Result(null, Result::SUCCESS);
+        } catch (PDOException $exeption) {
+            var_dump($exeption);
+            die();
+        }
+
+        return new Result(null, Result::ERROR);
     }
 }

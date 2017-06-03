@@ -27,9 +27,9 @@ gulp.task('style', function () {
         gulp.src(stylesheets),
         sourcemaps.init(),
         sass.sync({
-            indentWidth: 4,
-            indentType: 'space',
-            outputStyle: 'expanded'
+            /*indentWidth: 4,
+            indentType: 'space',*/
+            outputStyle: 'compressed'
         }).on('error', sass.logError),
         autoprefixer({
             browsers: [

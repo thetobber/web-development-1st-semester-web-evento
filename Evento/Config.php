@@ -19,9 +19,9 @@ d-m-Y H:i:s \U\T\C P
 class Config
 {
     const DB_HOST = 'localhost';
-    const DB_NAME = 'evento';
-    const DB_USER = 'evento';
-    const DB_PASS = 'nhQrQQzf7C6mTybsm47Hy4ae';
+    const DB_NAME = '';
+    const DB_USER = '';
+    const DB_PASS = '';
     const DB_CHARSET = 'utf8';
 
     const BASE_PATH = '';
